@@ -1,0 +1,10 @@
+﻿  Main.cpp
+D:\Grafica\Proyecto\Proyecto\Window.h(12,36): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
+  (compilando archivo de origen "Main.cpp")
+  
+D:\Grafica\Proyecto\Proyecto\Window.h(13,37): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
+  (compilando archivo de origen "Main.cpp")
+  
+D:\Grafica\Proyecto\Proyecto\Main.cpp(170,15): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\Main.cpp(172,33): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+  Proyecto.vcxproj -> D:\Grafica\Proyecto\x64\Debug\Proyecto.exe
