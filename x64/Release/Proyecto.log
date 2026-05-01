@@ -1,0 +1,144 @@
+﻿  Camera.cpp
+  DirectionalLight.cpp
+D:\Grafica\Proyecto\Proyecto\DirectionalLight.cpp(18,14): warning C4244: 'argumento': conversión de 'GLfloat' a 'GLint'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\DirectionalLight.cpp(19,14): warning C4244: 'argumento': conversión de 'GLfloat' a 'GLint'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\DirectionalLight.cpp(21,14): warning C4244: 'argumento': conversión de 'GLfloat' a 'GLint'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\DirectionalLight.cpp(22,14): warning C4244: 'argumento': conversión de 'GLfloat' a 'GLint'; posible pérdida de datos
+  Light.cpp
+  Main.cpp
+D:\Grafica\Proyecto\Proyecto\Window.h(12,36): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
+  (compilando archivo de origen "Main.cpp")
+  
+D:\Grafica\Proyecto\Proyecto\Window.h(13,37): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
+  (compilando archivo de origen "Main.cpp")
+  
+D:\Grafica\Proyecto\Proyecto\Main.cpp(169,15): warning C4244: 'inicializando': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\Main.cpp(171,33): warning C4244: '+=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+  Material.cpp
+  meshUTILES.cpp
+D:\Grafica\Proyecto\Proyecto\meshUTILES.cpp(26,24): warning C4267: 'inicializando': conversión de 'size_t' a 'unsigned int'; posible pérdida de datos
+  Mesh_tn.cpp
+  Model.cpp
+D:\Grafica\Proyecto\Proyecto\Model.cpp(16,88): warning C4474: "printf": se pasaron demasiados argumentos para la cadena de formato
+      D:\Grafica\Proyecto\Proyecto\Model.cpp(16,88):
+      los marcadores de posición y sus parámetros esperan 1 argumentos variádicos, pero se proporcionaron 2
+  
+D:\Grafica\Proyecto\Proyecto\Model.cpp(51,7): warning C4804: '<': uso no seguro del tipo 'bool' en la operación
+D:\Grafica\Proyecto\Proyecto\Model.cpp(110,78): warning C4267: 'argumento': conversión de 'size_t' a 'unsigned int'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\Model.cpp(110,62): warning C4267: 'argumento': conversión de 'size_t' a 'unsigned int'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\Model.cpp(133,40): warning C4267: '=': conversión de 'size_t' a 'int'; posible pérdida de datos
+  PointLight.cpp
+D:\Grafica\Proyecto\Proyecto\PointLight.cpp(28,14): warning C4244: 'argumento': conversión de 'GLfloat' a 'GLint'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\PointLight.cpp(29,14): warning C4244: 'argumento': conversión de 'GLfloat' a 'GLint'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\PointLight.cpp(30,14): warning C4244: 'argumento': conversión de 'GLfloat' a 'GLint'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\PointLight.cpp(32,14): warning C4244: 'argumento': conversión de 'GLfloat' a 'GLint'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\PointLight.cpp(33,14): warning C4244: 'argumento': conversión de 'GLfloat' a 'GLint'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\PointLight.cpp(34,14): warning C4244: 'argumento': conversión de 'GLfloat' a 'GLint'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\PointLight.cpp(35,14): warning C4244: 'argumento': conversión de 'GLfloat' a 'GLint'; posible pérdida de datos
+  Shader_light.cpp
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(103,38): warning C4477: 'snprintf' : la cadena de formato '%d' requiere un argumento de tipo 'int', pero el argumento variádico 1 tiene el tipo 'size_t'
+      D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(103,38):
+      considere el uso de ' %zd' en la cadena de formato
+  
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(106,38): warning C4477: 'snprintf' : la cadena de formato '%d' requiere un argumento de tipo 'int', pero el argumento variádico 1 tiene el tipo 'size_t'
+      D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(106,38):
+      considere el uso de ' %zd' en la cadena de formato
+  
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(109,38): warning C4477: 'snprintf' : la cadena de formato '%d' requiere un argumento de tipo 'int', pero el argumento variádico 1 tiene el tipo 'size_t'
+      D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(109,38):
+      considere el uso de ' %zd' en la cadena de formato
+  
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(112,38): warning C4477: 'snprintf' : la cadena de formato '%d' requiere un argumento de tipo 'int', pero el argumento variádico 1 tiene el tipo 'size_t'
+      D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(112,38):
+      considere el uso de ' %zd' en la cadena de formato
+  
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(115,38): warning C4477: 'snprintf' : la cadena de formato '%d' requiere un argumento de tipo 'int', pero el argumento variádico 1 tiene el tipo 'size_t'
+      D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(115,38):
+      considere el uso de ' %zd' en la cadena de formato
+  
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(118,38): warning C4477: 'snprintf' : la cadena de formato '%d' requiere un argumento de tipo 'int', pero el argumento variádico 1 tiene el tipo 'size_t'
+      D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(118,38):
+      considere el uso de ' %zd' en la cadena de formato
+  
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(121,38): warning C4477: 'snprintf' : la cadena de formato '%d' requiere un argumento de tipo 'int', pero el argumento variádico 1 tiene el tipo 'size_t'
+      D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(121,38):
+      considere el uso de ' %zd' en la cadena de formato
+  
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(131,38): warning C4477: 'snprintf' : la cadena de formato '%d' requiere un argumento de tipo 'int', pero el argumento variádico 1 tiene el tipo 'size_t'
+      D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(131,38):
+      considere el uso de ' %zd' en la cadena de formato
+  
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(134,38): warning C4477: 'snprintf' : la cadena de formato '%d' requiere un argumento de tipo 'int', pero el argumento variádico 1 tiene el tipo 'size_t'
+      D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(134,38):
+      considere el uso de ' %zd' en la cadena de formato
+  
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(137,38): warning C4477: 'snprintf' : la cadena de formato '%d' requiere un argumento de tipo 'int', pero el argumento variádico 1 tiene el tipo 'size_t'
+      D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(137,38):
+      considere el uso de ' %zd' en la cadena de formato
+  
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(140,38): warning C4477: 'snprintf' : la cadena de formato '%d' requiere un argumento de tipo 'int', pero el argumento variádico 1 tiene el tipo 'size_t'
+      D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(140,38):
+      considere el uso de ' %zd' en la cadena de formato
+  
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(143,38): warning C4477: 'snprintf' : la cadena de formato '%d' requiere un argumento de tipo 'int', pero el argumento variádico 1 tiene el tipo 'size_t'
+      D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(143,38):
+      considere el uso de ' %zd' en la cadena de formato
+  
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(146,38): warning C4477: 'snprintf' : la cadena de formato '%d' requiere un argumento de tipo 'int', pero el argumento variádico 1 tiene el tipo 'size_t'
+      D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(146,38):
+      considere el uso de ' %zd' en la cadena de formato
+  
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(149,38): warning C4477: 'snprintf' : la cadena de formato '%d' requiere un argumento de tipo 'int', pero el argumento variádico 1 tiene el tipo 'size_t'
+      D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(149,38):
+      considere el uso de ' %zd' en la cadena de formato
+  
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(152,38): warning C4477: 'snprintf' : la cadena de formato '%d' requiere un argumento de tipo 'int', pero el argumento variádico 1 tiene el tipo 'size_t'
+      D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(152,38):
+      considere el uso de ' %zd' en la cadena de formato
+  
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(155,38): warning C4477: 'snprintf' : la cadena de formato '%d' requiere un argumento de tipo 'int', pero el argumento variádico 1 tiene el tipo 'size_t'
+      D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(155,38):
+      considere el uso de ' %zd' en la cadena de formato
+  
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(215,75): warning C4244: 'argumento': conversión de 'GLuint' a 'GLfloat'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(215,26): warning C4244: 'argumento': conversión de 'GLuint' a 'GLfloat'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(214,91): warning C4244: 'argumento': conversión de 'GLuint' a 'GLfloat'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(214,42): warning C4244: 'argumento': conversión de 'GLuint' a 'GLfloat'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(228,98): warning C4244: 'argumento': conversión de 'GLuint' a 'GLfloat'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(228,62): warning C4244: 'argumento': conversión de 'GLuint' a 'GLfloat'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(228,24): warning C4244: 'argumento': conversión de 'GLuint' a 'GLfloat'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(227,70): warning C4244: 'argumento': conversión de 'GLuint' a 'GLfloat'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(227,24): warning C4244: 'argumento': conversión de 'GLuint' a 'GLfloat'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(226,88): warning C4244: 'argumento': conversión de 'GLuint' a 'GLfloat'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(226,42): warning C4244: 'argumento': conversión de 'GLuint' a 'GLfloat'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\Shader_light.cpp(278,24): warning C4267: '=': conversión de 'size_t' a 'GLint'; posible pérdida de datos
+  Skybox.cpp
+D:\Grafica\Proyecto\Proyecto\Skybox.cpp(30,47): warning C4267: 'argumento': conversión de 'size_t' a 'GLenum'; posible pérdida de datos
+  Sphere.cpp
+D:\Grafica\Proyecto\Proyecto\Sphere.cpp(39,13): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\Sphere.cpp(43,16): warning C4244: 'inicializando': conversión de 'double' a 'float'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\Sphere.cpp(91,50): warning C4267: 'argumento': conversión de 'size_t' a 'GLsizei'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\Sphere.cpp(94,51): warning C4267: 'argumento': conversión de 'size_t' a 'GLsizei'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\Sphere.cpp(98,50): warning C4267: 'argumento': conversión de 'size_t' a 'GLsizei'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\Sphere.cpp(108,42): warning C4267: 'argumento': conversión de 'size_t' a 'GLsizei'; posible pérdida de datos
+  SpotLight.cpp
+  Texture.cpp
+  Window.cpp
+D:\Grafica\Proyecto\Proyecto\Window.h(12,36): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
+  (compilando archivo de origen "Window.cpp")
+  
+D:\Grafica\Proyecto\Proyecto\Window.h(13,37): warning C4244: 'return': conversión de 'GLint' a 'GLfloat'; posible pérdida de datos
+  (compilando archivo de origen "Window.cpp")
+  
+D:\Grafica\Proyecto\Proyecto\Window.cpp(226,22): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\Window.cpp(227,22): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\Window.cpp(231,28): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\Window.cpp(232,40): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\Window.cpp(234,21): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+D:\Grafica\Proyecto\Proyecto\Window.cpp(235,21): warning C4244: '=': conversión de 'double' a 'GLfloat'; posible pérdida de datos
+  Generando código
+  Previous IPDB not found, fall back to full compilation.
+D:\Grafica\Proyecto\Proyecto\Window.cpp(82): warning C4715: 'Window::Initialise': no todas las rutas de acceso de control devuelven un valor
+  All 678 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Generación de código finalizada
+  Proyecto.vcxproj -> D:\Grafica\Proyecto\x64\Release\Proyecto.exe
