@@ -2,6 +2,7 @@
 #include<stdio.h>
 #include<glew.h>
 #include<glfw3.h>
+#include "CommonValues.h"
 
 class Window
 {
@@ -13,21 +14,12 @@ public:
 	GLfloat getBufferHeight() { return bufferHeight; }
 	GLfloat getXChange();
 	GLfloat getYChange();
-	GLfloat heli() { return helis; }
-	GLfloat encender() { return on; }
-	GLfloat encenderPez() { return onpez; }
-	GLfloat carro() { return luz; }
-	GLfloat pezMov() { return nadar; }
-	GLfloat teclaNave() {
-		return tecla;
-	}
-	GLfloat spotpezX() { return x; }
-	GLfloat spotpezY() { return y; }
-	GLfloat spotpezZ() { return z; }
+	bool* getLucesSpot() { return lucesSpot; }
 
 	bool getShouldClose() {
 		return  glfwWindowShouldClose(mainWindow);
 	}
+	int getCamaraActiva() { return camaraActiva; }
 	bool* getsKeys() { return keys; }
 	void swapBuffers() { return glfwSwapBuffers(mainWindow); }
 
@@ -43,12 +35,10 @@ private:
 	GLfloat xChange;
 	GLfloat yChange;
 	GLfloat muevex;
-	GLfloat helis;
-	GLfloat on;
-	GLfloat luz;
-	GLfloat nadar;
-	GLfloat onpez,x,y,z,tecla;
+	int camaraActiva;
 	bool mouseFirstMoved;
+	bool lucesSpot[MAX_SPOT_LIGHTS] = { false };
+
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);
 	static void ManejaMouse(GLFWwindow* window, double xPos, double yPos);
 

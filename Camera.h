@@ -22,8 +22,11 @@ public:
 
 	~Camera();
 
+	void setPosition(glm::vec3 pos);
+
 private:
 	glm::vec3 position;
+	glm::vec3 pos;
 	glm::vec3 front;
 	glm::vec3 up;
 	glm::vec3 right;

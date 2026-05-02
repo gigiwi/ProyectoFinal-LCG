@@ -14,13 +14,8 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 	width = windowWidth;
 	height = windowHeight;
 	muevex = 2.0f;
-	helis = 2.0f;
-	on = 0;
-	onpez= 1;
-	nadar = 0.f;
-	x = 0.f;
-	y = 0.f;
-	z = 1.f;
+	camaraActiva = 1;
+
 	for (size_t i = 0; i < 1024; i++)
 	{
 		keys[i] = 0;
@@ -111,6 +106,20 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	{
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	}
+
+	if (action == GLFW_PRESS) {
+		if (key == GLFW_KEY_1) {
+			theWindow->camaraActiva = 0; // aérea
+		}
+		if (key == GLFW_KEY_2) {
+			theWindow->camaraActiva = 1; // tercera persona
+		}
+		if (key == GLFW_KEY_3) {
+			theWindow->camaraActiva = 2; // PUESTOS
+		}
+	}
+
+
 	if (key == GLFW_KEY_Y)
 	{
 		theWindow-> muevex += 1.0;
@@ -118,61 +127,6 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	if (key == GLFW_KEY_U)
 	{
 		theWindow-> muevex -= 1.0;
-	}
-
-	if (key == GLFW_KEY_I)
-	{
-		theWindow->helis+= 1.0;
-		theWindow->tecla=1;
-	}
-	if (key == GLFW_KEY_O)
-	{
-		theWindow->helis -= 1.0;
-		theWindow->tecla = 0;
-	}
-
-
-	if (key == GLFW_KEY_H && action == GLFW_PRESS)
-	{
-		if (theWindow->on == 1)
-		{
-			theWindow->on = 0;
-		}
-		else
-		{
-			theWindow->on = 1;
-		}
-	}
-
-	static bool subiendo = true;
-
-	if (key == GLFW_KEY_J && action == GLFW_PRESS)
-	{
-		if (theWindow->onpez == 1)
-		{
-			theWindow->onpez = 0;
-		}
-		else
-		{
-			theWindow->onpez = 1;
-		}
-	}
-
-	static float direccion = 1.0f;
-
-	if (key == GLFW_KEY_K)
-	{
-		theWindow->nadar += 0.3f * direccion;
-		if (theWindow->nadar >= 1.5f)
-		{
-			theWindow->nadar = 1.5f;
-			direccion = -1.0f;
-		}
-		else if (theWindow->nadar <= 0.0f)
-		{
-			theWindow->nadar = 0.0f;
-			direccion = 1.0f;
-		}
 	}
 
 	if (key >= 0 && key < 1024)
@@ -187,31 +141,6 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 			theWindow->keys[key] = false;
 			//printf("se solto la tecla %d'\n", key);
 		}
-	}
-
-	if (key == GLFW_KEY_X )
-	{
-		theWindow->x += 0.1f;;
-	}
-	if (key == GLFW_KEY_C)
-	{
-		theWindow->x -= 0.1f;;
-	}
-	if (key == GLFW_KEY_V)
-	{
-		theWindow->y += 0.1f;;
-	}
-	if (key == GLFW_KEY_B)
-	{
-		theWindow->y -= 0.1f;;
-	}
-	if (key == GLFW_KEY_N)
-	{
-		theWindow->z += 0.1f;;
-	}
-	if (key == GLFW_KEY_M)
-	{
-		theWindow->z -= 0.1f;;
 	}
 }
 
