@@ -6,15 +6,12 @@
 #include <cmath>
 #include <vector>
 #include <math.h>
-
 #include <glew.h>
 #include <glfw3.h>
-
 #include <glm.hpp>
 #include <gtc\matrix_transform.hpp>
 #include <gtc\type_ptr.hpp>
 #include<assimp/Importer.hpp>
-
 #include "Window.h"
 #include "Mesh.h"
 #include "Shader_light.h"
@@ -25,7 +22,7 @@
 #include "Skybox.h"
 #include "meshUTILES.h"
 
-//para iluminación
+//para iluminacion
 #include "CommonValues.h"
 #include "DirectionalLight.h"
 #include "PointLight.h"
@@ -33,7 +30,6 @@
 #include "Material.h"
 
 const float toRadians = 3.14159265f / 180.0f;
-
 
 float toffsetflechau = 0.0f;
 float toffsetflechav = 0.0f;
@@ -46,10 +42,24 @@ Window mainWindow;
 std::vector<Shader> shaderList;
 
 Camera camera;
+Camera camaraAvatar;
 
 Texture pisoTexture;
 
-Skybox skybox;
+Model lamp;
+
+
+
+//MODELO AVATAR
+Model derechaB;
+Model derechaP;
+Model izquiedaB;
+Model izquiedaP;
+Model Harry;
+
+//SKYBOXES
+Skybox skyboxDia;
+Skybox skyboxNoche;
 
 //materiales
 Material Material_brillante;
@@ -64,15 +74,13 @@ static double limitFPS = 1.0 / 60.0;
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
 SpotLight spotLights[MAX_SPOT_LIGHTS];
+int camaraAnterior = -1;
 
 // Vertex Shader
 static const char* vShader = "shaders/shader_light.vert";
 
 // Fragment Shader
 static const char* fShader = "shaders/shader_light.frag";
-
-
-
 
 
 void CreateShaders()
@@ -83,50 +91,70 @@ void CreateShaders()
 }
 
 
-
-
 int main()
 {
-	mainWindow = Window(1366, 768); // 1280, 1024 or 1024, 768
+	mainWindow = Window(1366, 768);
 	mainWindow.Initialise();
 
 	std::vector<Mesh*> meshList;
 	CreateObjects(meshList);
 	CreateShaders();
 
-	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.5f, 0.5f);
 
 	pisoTexture = Texture("Textures/piso.tga");
 	pisoTexture.LoadTextureA();
 	
+	//MODELOS
+	lamp = Model();
+	lamp.LoadModel("Models/lamp.obj");
+
+	derechaB = Model();
+	derechaB.LoadModel("Models/derechaB.obj");
+	derechaP = Model();
+	derechaP.LoadModel("Models/derechaP.obj");
+	izquiedaB = Model();
+	izquiedaB.LoadModel("Models/izquierdaB.obj");
+	izquiedaP = Model();
+	izquiedaP.LoadModel("Models/izquierdaP.obj");
+	Harry = Model();
+	Harry.LoadModel("Models/harry.obj");
+
+	//CAMARAS
+	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.5f, 0.5f);
+	camaraAvatar = Camera(glm::vec3(2.0f, 2.0f, 0.5f), glm::vec3(0.0f, 1.0f, 0.0f), 180.0f, 0.0f, 0.3f, 0.5f);
 
 
-	std::vector<std::string> skyboxFaces;
-	skyboxFaces.push_back("Textures/Skybox/pxN.jpg");
-	skyboxFaces.push_back("Textures/Skybox/nxN.jpg");
-	skyboxFaces.push_back("Textures/Skybox/nyN.jpg");
-	skyboxFaces.push_back("Textures/Skybox/pyN.jpg");
-	skyboxFaces.push_back("Textures/Skybox/pzN.jpg");
-	skyboxFaces.push_back("Textures/Skybox/nzN.jpg");
+	//SKYBOXES
+	std::vector<std::string> skyboxFacesNoche;
+	skyboxFacesNoche.push_back("Textures/Skybox/pxN.jpg");
+	skyboxFacesNoche.push_back("Textures/Skybox/nxN.jpg");
+	skyboxFacesNoche.push_back("Textures/Skybox/nyN.jpg");
+	skyboxFacesNoche.push_back("Textures/Skybox/pyN.jpg");
+	skyboxFacesNoche.push_back("Textures/Skybox/pzN.jpg");
+	skyboxFacesNoche.push_back("Textures/Skybox/nzN.jpg");
+	skyboxNoche = Skybox(skyboxFacesNoche);
 
-	skybox = Skybox(skyboxFaces);
+	std::vector<std::string> skyboxFacesDia;
+	skyboxFacesDia.push_back("Textures/Skybox/px.jpg");
+	skyboxFacesDia.push_back("Textures/Skybox/nx.jpg");
+	skyboxFacesDia.push_back("Textures/Skybox/ny.jpg");
+	skyboxFacesDia.push_back("Textures/Skybox/py.jpg");
+	skyboxFacesDia.push_back("Textures/Skybox/pz.jpg");
+	skyboxFacesDia.push_back("Textures/Skybox/nz.jpg");
+	skyboxDia = Skybox(skyboxFacesDia);
+
+
 
 	Material_brillante = Material(4.0f, 256);
 	Material_opaco = Material(0.3f, 4);
 
 
-	//luz direccional, sólo 1 y siempre debe de existir
-	mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,
-		0.5f, 0.5f,
-		0.0f, -1.0f, -1.0f);
-	//contador de luces puntuales
-
 	unsigned int pointLightCount = 0;
 	//Declaración de primer luz puntual
-	pointLights[0] = PointLight(1.0f, 0.0f, 0.0f,
-		0.0f, 1.0f,
-		0.0f, 2.5f, 1.5f,
-		0.3f, 0.2f, 0.1f);
+	pointLights[0] = PointLight(1.0f, 1.0f, 1.0f, 
+		0.6f, 1.0f, 
+		0.0f, 0.0f, 0.f,
+		0.5f, 0.09f, 0.032f);
 	pointLightCount++;
 
 	unsigned int spotLightCount = 0;
@@ -161,54 +189,141 @@ int main()
 	glm::mat4 modelaux(1.0);
 	glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 	glm::vec2 toffset = glm::vec2(0.0f, 0.0f);
+	glm::vec3 sol;
+	glm::vec3 posicionModelo = glm::vec3(280.0f, 18.0f, 0.0f);
+
+	float luzSolar = 0.9f;   
+	float cambioSolar = 0.00005;
+	bool dia = false;
+	float anguloSol;
+	float angulo;
+	bool caminar;
+	bool esNoche;
+	float cambioDiaNoche;
+	float velArticulaciones = 0.0f;
+	float Articulaciones;
 
 
-	////Loop mientras no se cierra la ventana
 	while (!mainWindow.getShouldClose())
 	{
+		caminar = false;
+		Camera* activeCamera;
 		GLfloat now = glfwGetTime();
 		deltaTime = now - lastTime;
 		deltaTime += (now - lastTime) / limitFPS;
 		lastTime = now;
 
 		glfwPollEvents();
-		camera.keyControl(mainWindow.getsKeys(), deltaTime);
-		camera.mouseControl(mainWindow.getXChange(), mainWindow.getYChange());
 
-		// Clear the window
+		// CAMARA /////////////////////////////////////////////////////////7
+		GLfloat xChange = mainWindow.getXChange(),yChange = mainWindow.getYChange();
+		
+		int camaraActiva = mainWindow.getCamaraActiva();
+
+		if (camaraActiva == 0)
+		{
+			activeCamera = &camera;
+			camera.keyControl(mainWindow.getsKeys(), deltaTime);
+			camera.mouseControl(xChange, yChange);
+		}
+		else if (camaraActiva == 1)
+		{
+			glm::vec3 movAvatar = glm::normalize(glm::vec3(camaraAvatar.getCameraDirection().x,0.0f,camaraAvatar.getCameraDirection().z));
+			glm::vec3 vista = glm::normalize(glm::cross(movAvatar,glm::vec3(0.0f, 1.0f, 0.0f)));
+			glm::vec3 camOffset = -movAvatar * 23.0f + glm::vec3(0.0f, 10.5f, 0.0f);
+			glm::vec3 camPos = posicionModelo + camOffset;
+
+			camaraAvatar.setPosition(camPos);
+			activeCamera = &camaraAvatar;
+			caminar = false;
+
+			camaraAvatar.mouseControl(xChange, yChange);
+			
+			//ANIMACION AVATAR
+			posicionModelo += (mainWindow.getMoverAdelante() ? movAvatar * deltaTime * 1.0f : glm::vec3(0.0f));
+			posicionModelo -= (mainWindow.getMoverAtras() ? movAvatar * deltaTime * 1.0f : glm::vec3(0.0f));
+			posicionModelo -= (mainWindow.getMoverIzquierda() ? vista * deltaTime * 1.0f : glm::vec3(0.0f));
+			posicionModelo += (mainWindow.getMoverDerecha() ? vista * deltaTime * 1.0f : glm::vec3(0.0f));
+
+			caminar = mainWindow.getMoverAdelante() ||mainWindow.getMoverAtras() ||mainWindow.getMoverIzquierda() || mainWindow.getMoverDerecha();
+		}
+		else
+		{
+			activeCamera = &camaraAvatar;
+		}
+		//////////////////////////////
+
+
+		//Clear the window
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		skybox.DrawSkybox(camera.calculateViewMatrix(), projection);
+
+		if (luzSolar >= 0.30f)
+		{
+			skyboxDia.DrawSkybox(activeCamera->calculateViewMatrix(), projection);
+		}
+		else
+		{
+			skyboxNoche.DrawSkybox(activeCamera->calculateViewMatrix(), projection);
+		}
+
 		shaderList[0].UseShader();
 		uniformModel = shaderList[0].GetModelLocation();
 		uniformProjection = shaderList[0].GetProjectionLocation();
 		uniformView = shaderList[0].GetViewLocation();
 		uniformEyePosition = shaderList[0].GetEyePositionLocation();
 		uniformColor = shaderList[0].getColorLocation();
-		uniformTextureOffset = shaderList[0].getOffsetLocation(); // para la textura con movimiento
+		uniformTextureOffset = shaderList[0].getOffsetLocation();
 
-		//información en el shader de intensidad especular y brillo
+		//Información en el shader de intensidad especular y brillo
 		uniformSpecularIntensity = shaderList[0].GetSpecularIntensityLocation();
 		uniformShininess = shaderList[0].GetShininessLocation();
 
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
-		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(camera.calculateViewMatrix()));
-		glUniform3f(uniformEyePosition, camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
+		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(activeCamera->calculateViewMatrix()));
+		glUniform3f(uniformEyePosition, activeCamera->getCameraPosition().x, activeCamera->getCameraPosition().y,activeCamera->getCameraPosition().z);
 
-		// luz ligada a la cámara de tipo flash
-		lowerLight = camera.getCameraPosition();
-		lowerLight.y -= 0.3f;
-		spotLights[0].SetFlash(lowerLight, camera.getCameraDirection());
+		SpotLight spotLightsToSend[MAX_SPOT_LIGHTS];
+		unsigned int activeSpotLights = 0;
+		for (int i = 0; i < MAX_SPOT_LIGHTS; i++) {
+			if (mainWindow.getLucesSpot()[i]) {
+				spotLightsToSend[activeSpotLights++] = spotLights[i];
+			}
+		}
+		shaderList[0].SetSpotLights(spotLightsToSend, activeSpotLights);
 
-		//información al shader de fuentes de iluminación
+
+		// DIA A NOCHE /////////////////////////////////////////////
+		if (dia) {
+		luzSolar -= cambioSolar;
+			if (luzSolar <= 0.005f) { luzSolar = 0.005f; dia = false; }
+		}
+		else {
+			luzSolar += cambioSolar;
+			if (luzSolar >= 0.9f) { luzSolar = 0.9f; dia = true;}
+		}
+
+		anguloSol = glm::radians(180.0f * luzSolar);
+		sol.x = cos(anguloSol); sol.y = -1.0f; sol.z = 0.0f;
+		mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,(luzSolar * 0.3f)+0.05,luzSolar, sol.x, sol.y, sol.z);
 		shaderList[0].SetDirectionalLight(&mainLight);
-		shaderList[0].SetPointLights(pointLights, pointLightCount);
-		shaderList[0].SetSpotLights(spotLights, spotLightCount);
+
+
+		//Lamparas
+		esNoche = luzSolar<0.28f;
+		if (esNoche)
+			shaderList[0].SetPointLights(pointLights, pointLightCount);
+		else
+			shaderList[0].SetPointLights(pointLights, 0);
+		//////////////////////////////////////////////////////////////777
+			
 
 		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
 
+
+		//PISO
 		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(0.0f, -2.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(30.0f, 1.0f, 30.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
@@ -218,6 +333,68 @@ int main()
 		meshList[2]->RenderMesh();
 
 
+		//HARRY
+		velArticulaciones += 0.5f * deltaTime;
+		float Articulaciones;
+
+		if (caminar) {
+			Articulaciones = sin(glm::radians(velArticulaciones*12.0f))*glm::radians(30.0f);
+		}
+		else 
+		{
+			Articulaciones = 0.0f;
+		}
+
+		angulo = atan2(camaraAvatar.getCameraDirection().x, camaraAvatar.getCameraDirection().z);
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, posicionModelo);
+		model = glm::scale(model, glm::vec3(6.0f, 6.0f, 6.0f));
+		model = glm::rotate(model, angulo, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Harry.RenderModel();
+		//Pierna derecha
+		modelaux = model;
+		model = glm::translate(model, glm::vec3(-0.1f, -1.2f, -0.13f));
+		model = glm::rotate(model, -Articulaciones/3, glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		derechaP.RenderModel();
+		model = modelaux;
+		//Brazo Derecho
+		modelaux = model;
+		model = glm::translate(model, glm::vec3(-0.36f, 0.0f, 0.0f));
+		model = glm::rotate(model, Articulaciones, glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		derechaB.RenderModel();
+		model = modelaux;
+		//Pierna izquierda
+		modelaux = model;
+		model = glm::translate(model, glm::vec3(0.16f, -1.29f, -0.2f));
+		model = glm::rotate(model, Articulaciones / 3, glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		izquiedaP.RenderModel();
+		model = modelaux;
+		//Brazo izquierdo
+		modelaux = model;
+		model = glm::translate(model, glm::vec3(0.42, 0.0,0.0f));
+		model = glm::rotate(model, -Articulaciones, glm::vec3(1.0f, 0.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		izquiedaB.RenderModel();
+		model = modelaux;
+
+
+
+
+		//lampara
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(20.0f, -1.0f, -6.99f));
+		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		lamp.RenderModel();
+
+		pointLights[0].SetPos(
+			glm::vec3(model * glm::vec4(-1.0f, 2.0f, 0.0f, 1.0f))
+		);
+
 		glUseProgram(0);
 
 		mainWindow.swapBuffers();
@@ -225,3 +402,5 @@ int main()
 
 	return 0;
 }
+
+

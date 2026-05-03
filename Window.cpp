@@ -15,6 +15,10 @@ Window::Window(GLint windowWidth, GLint windowHeight)
 	height = windowHeight;
 	muevex = 2.0f;
 	camaraActiva = 1;
+	moverAdelante = false;
+    moverAtras = false;
+    moverIzquierda = false;
+    moverDerecha = false;
 
 	for (size_t i = 0; i < 1024; i++)
 	{
@@ -107,7 +111,21 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 		glfwSetWindowShouldClose(window, GL_TRUE);
 	}
 
-	if (action == GLFW_PRESS) {
+	if (key == GLFW_KEY_W)
+		theWindow->moverAdelante = (action != GLFW_RELEASE);
+
+	if (key == GLFW_KEY_S)
+		theWindow->moverAtras = (action != GLFW_RELEASE);
+
+	if (key == GLFW_KEY_A)
+		theWindow->moverIzquierda = (action != GLFW_RELEASE);
+
+	if (key == GLFW_KEY_D)
+		theWindow->moverDerecha = (action != GLFW_RELEASE);
+
+
+	if (action == GLFW_PRESS) 
+	{
 		if (key == GLFW_KEY_1) {
 			theWindow->camaraActiva = 0; // aérea
 		}

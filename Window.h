@@ -14,6 +14,13 @@ public:
 	GLfloat getBufferHeight() { return bufferHeight; }
 	GLfloat getXChange();
 	GLfloat getYChange();
+
+	bool getMoverAdelante() { return moverAdelante; }
+	bool getMoverAtras() { return moverAtras; }
+	bool getMoverIzquierda() { return moverIzquierda; }
+	bool getMoverDerecha() { return moverDerecha; }
+
+
 	bool* getLucesSpot() { return lucesSpot; }
 
 	bool getShouldClose() {
@@ -38,6 +45,12 @@ private:
 	int camaraActiva;
 	bool mouseFirstMoved;
 	bool lucesSpot[MAX_SPOT_LIGHTS] = { false };
+
+	bool moverAdelante;
+	bool moverAtras;
+	bool moverIzquierda;
+	bool moverDerecha;
+
 
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);
 	static void ManejaMouse(GLFWwindow* window, double xPos, double yPos);
