@@ -31,6 +31,10 @@
 
 const float toRadians = 3.14159265f / 180.0f;
 
+
+std::vector<Model*> modelos;
+
+
 float toffsetflechau = 0.0f;
 float toffsetflechav = 0.0f;
 float toffsetnumerou = 0.0f;
@@ -45,10 +49,22 @@ Camera camera;
 Camera camaraAvatar;
 
 Texture pisoTexture;
+Texture parking;
+
+Model express;
+Model estacion;
+Model hogwarts;
+Model rocas1;
+Model rocas2;
+Model rocas3;
+Model vias;
+Model cancha;
+Model bleachers;
+Model whitecar;
+Model cochesteam;
+
 
 Model lamp;
-
-
 
 //MODELO AVATAR
 Model derechaB;
@@ -100,14 +116,42 @@ int main()
 	CreateObjects(meshList);
 	CreateShaders();
 
-
+	//Texturas
 	pisoTexture = Texture("Textures/piso.tga");
 	pisoTexture.LoadTextureA();
+	parking = Texture("Textures/parking.jpg");
+	parking.LoadTextureA();
 	
 	//MODELOS
+	express = Model();
+	express.LoadModel("Models/express.obj");
+	vias = Model();
+	vias.LoadModel("Models/vias.obj");
+	estacion = Model();
+	estacion.LoadModel("Models/estacion.obj");
+	cancha = Model();
+	cancha.LoadModel("Models/cancha.obj");
+	bleachers = Model();
+	bleachers.LoadModel("Models/bleachers.obj");
+	whitecar = Model();
+	whitecar.LoadModel("Models/whitecar.obj");
+	cochesteam = Model();
+	cochesteam.LoadModel("Models/cochesteam.obj");
+	hogwarts = Model();
+	hogwarts.LoadModel("Models/hogwarts.obj");
+	rocas1 = Model();
+	rocas1.LoadModel("Models/rocas1.obj");
+	rocas2 = Model();
+	rocas2.LoadModel("Models/rocas2.obj");
+	rocas3 = Model();
+	rocas3.LoadModel("Models/rocas3.obj");
+
+
+	//Modelos Luces
 	lamp = Model();
 	lamp.LoadModel("Models/lamp.obj");
 
+	//AVATAR
 	derechaB = Model();
 	derechaB.LoadModel("Models/derechaB.obj");
 	derechaP = Model();
@@ -190,9 +234,9 @@ int main()
 	glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 	glm::vec2 toffset = glm::vec2(0.0f, 0.0f);
 	glm::vec3 sol;
-	glm::vec3 posicionModelo = glm::vec3(280.0f, 18.0f, 0.0f);
+	glm::vec3 posicionModelo = glm::vec3(275.0f, 18.0f, 0.0f);
 
-	float luzSolar = 0.9f;   
+	float luzSolar = 0.5f;   
 	float cambioSolar = 0.00005;
 	bool dia = false;
 	float anguloSol;
@@ -305,7 +349,7 @@ int main()
 
 		anguloSol = glm::radians(180.0f * luzSolar);
 		sol.x = cos(anguloSol); sol.y = -1.0f; sol.z = 0.0f;
-		mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,(luzSolar * 0.3f)+0.05,luzSolar, sol.x, sol.y, sol.z);
+		mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,(luzSolar * 0.3f),luzSolar, sol.x, sol.y, sol.z);
 		shaderList[0].SetDirectionalLight(&mainLight);
 
 
@@ -332,67 +376,144 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[2]->RenderMesh();
 
+		//Hogwarts
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-720.0f, 0.1f, 0.0f));
+		model = glm::scale(model, glm::vec3(300.0f, 300.0f, 300.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		hogwarts.RenderModel();
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-90.0f, -25.0f, 345.0f));
+		model = glm::scale(model, glm::vec3(300.0f, 300.0f, 300.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		rocas1.RenderModel();
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-110.0, -25.0f, -315.0f));
+		model = glm::scale(model, glm::vec3(300.0f, 300.0f, 300.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		rocas2.RenderModel();
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(390.0, -25.0f, -50.0f));
+		model = glm::scale(model, glm::vec3(300.0f, 300.0f, 200.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		rocas3.RenderModel();
+
+
+
+		//ESTACIONAMIENTO
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(200.0f, 0.1f, 190.0f));
+		modelaux = model;
+		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(9.0f, 1.0f, 4.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+		parking.UseTexture();
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[7]->RenderMesh();
+
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-20.0f, 0.1f, 45.0f));
+		model = glm::scale(model, glm::vec3(12.0f, 12.0f, 12.0f));
+		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		whitecar.RenderModel();
+
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(24.0f, 0.1f, -45.0f));
+		model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		cochesteam.RenderModel();
+
+
 
 		//HARRY
 		velArticulaciones += 0.5f * deltaTime;
 		float Articulaciones;
-
-		if (caminar) {
-			Articulaciones = sin(glm::radians(velArticulaciones*12.0f))*glm::radians(30.0f);
-		}
-		else 
-		{
-			Articulaciones = 0.0f;
-		}
-
+		if (caminar) { Articulaciones = sin(glm::radians(velArticulaciones * 12.0f)) * glm::radians(30.0f); } else { Articulaciones = 0.0f; }
 		angulo = atan2(camaraAvatar.getCameraDirection().x, camaraAvatar.getCameraDirection().z);
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, posicionModelo);
 		model = glm::scale(model, glm::vec3(6.0f, 6.0f, 6.0f));
 		model = glm::rotate(model, angulo, glm::vec3(0.0f, 1.0f, 0.0f));
+		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Harry.RenderModel();
+		
 		//Pierna derecha
-		modelaux = model;
+		model = modelaux;
 		model = glm::translate(model, glm::vec3(-0.1f, -1.2f, -0.13f));
 		model = glm::rotate(model, -Articulaciones/3, glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		derechaP.RenderModel();
-		model = modelaux;
+		
 		//Brazo Derecho
-		modelaux = model;
+		model = modelaux;
 		model = glm::translate(model, glm::vec3(-0.36f, 0.0f, 0.0f));
 		model = glm::rotate(model, Articulaciones, glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		derechaB.RenderModel();
-		model = modelaux;
+
 		//Pierna izquierda
-		modelaux = model;
+		model = modelaux;
 		model = glm::translate(model, glm::vec3(0.16f, -1.29f, -0.2f));
 		model = glm::rotate(model, Articulaciones / 3, glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		izquiedaP.RenderModel();
-		model = modelaux;
+		
 		//Brazo izquierdo
-		modelaux = model;
+		model = modelaux;
 		model = glm::translate(model, glm::vec3(0.42, 0.0,0.0f));
 		model = glm::rotate(model, -Articulaciones, glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		izquiedaB.RenderModel();
-		model = modelaux;
 
 
-
-
-		//lampara
+		//Express
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(20.0f, -1.0f, -6.99f));
+		model = glm::translate(model, glm::vec3(324.0f, 0.1f, 0.0f));
+		modelaux = model;
 		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		express.RenderModel();
+
+		//Vias
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -20.0f));
+		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 2.6f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		vias.RenderModel();
+		//Estacion
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(280.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		estacion.RenderModel();
+
+		//cancha
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.1f, -200.0f));
+		model = glm::scale(model, glm::vec3(1.2f, 1.2f, 1.2f));
+		modelaux = model;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		cancha.RenderModel();
+
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(0.0f, 10.f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		bleachers.RenderModel();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(240.0f, 0.0f, -90.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		lamp.RenderModel();
 
 		pointLights[0].SetPos(
-			glm::vec3(model * glm::vec4(-1.0f, 2.0f, 0.0f, 1.0f))
+			glm::vec3(model * glm::vec4(0.0f, .0f, 0.0f, 1.0f))
 		);
 
 		glUseProgram(0);

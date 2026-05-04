@@ -119,6 +119,18 @@ void CreateObjects(std::vector<Mesh*>& meshList)
 
 	};
 
+	unsigned int floorIndices1[] = {
+		0, 2, 1,
+		1, 2, 3
+	};
+
+	GLfloat floorVertices1[] = {
+		-10.0f, 0.0f, -10.0f,	0.0f, 0.0f,		0.0f, -1.0f, 0.0f,
+		10.0f, 0.0f, -10.0f,	1.0f, 0.0f,	0.0f, -1.0f, 0.0f,
+		-10.0f, 0.0f, 10.0f,	0.0f, 1.0f,	0.0f, -1.0f, 0.0f,
+		10.0f, 0.0f, 10.0f,		1.0f, 1.0f,	0.0f, -1.0f, 0.0f
+	};
+
 	Mesh* obj1 = new Mesh();
 	obj1->CreateMesh(vertices, indices, 32, 12);
 	meshList.push_back(obj1);
@@ -148,4 +160,7 @@ void CreateObjects(std::vector<Mesh*>& meshList)
 	obj7->CreateMesh(numeroVertices, numeroIndices, 32, 6);
 	meshList.push_back(obj7); // solo un número
 
+	Mesh* obj8 = new Mesh();
+	obj8->CreateMesh(floorVertices1, floorIndices1, 32, 6);
+	meshList.push_back(obj8);
 }

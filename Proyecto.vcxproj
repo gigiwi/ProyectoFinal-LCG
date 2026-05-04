@@ -142,6 +142,7 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="meshUTILES.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="modelos.h" />
     <ClInclude Include="PointLight.h" />
     <ClInclude Include="Shader_light.h" />
     <ClInclude Include="Skybox.h" />
@@ -160,6 +161,7 @@
     <ClCompile Include="meshUTILES.cpp" />
     <ClCompile Include="Mesh_tn.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="modelos.cpp" />
     <ClCompile Include="PointLight.cpp" />
     <ClCompile Include="Shader_light.cpp" />
     <ClCompile Include="Skybox.cpp" />
