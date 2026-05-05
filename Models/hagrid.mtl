@@ -1,0 +1,77 @@
+# Blender 5.0.1 MTL File: 'hagrid.blend'
+# www.blender.org
+
+newmtl Hacha
+Ns 655.328796
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd metal.jpg
+
+newmtl Luz
+Ns 1000.000000
+Ka 0.690476 0.690476 0.690476
+Ks 0.500000 0.500000 0.500000
+Ke 0.517334 0.344417 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd luz.jpg
+
+newmtl MaderaClara
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd Madera_clara_Albedo.png
+map_Bump -bm 1.000000 Madera_clara_Normal.png
+
+newmtl Pared
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd Pared_piedra_musgo_2K_Albedo.png
+map_Ns Pared_piedra_musgo_2K_Normal.png
+map_Bump -bm 2.800000 Pared_piedra_musgo_2K_Normal.png
+
+newmtl Puerta
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd Madera_puerta_Albedo.png
+map_Ns Madera_puerta_Normal.png
+map_Bump -bm 1.000000 Madera_puerta_Normal.png
+
+newmtl Tejado
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 2
+map_Kd Metal_oxidado_Azul_Albedo.png
+map_Ns Metal_oxidado_Azul_Roughness.png
+map_refl Metal_oxidado_Azul_Metalness.png
+map_Bump -bm 1.000000 Metal_oxidado_Azul_Normal.png
+
+newmtl anillo
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+d 1.000000
+illum 3
+map_Kd metal.jpg

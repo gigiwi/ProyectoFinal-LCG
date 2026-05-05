@@ -62,9 +62,12 @@ Model cancha;
 Model bleachers;
 Model whitecar;
 Model cochesteam;
+Model banca;
+Model cabanaHagrid;
 
 
 Model lamp;
+Model lamp2; 
 
 //MODELO AVATAR
 Model derechaB;
@@ -72,6 +75,7 @@ Model derechaP;
 Model izquiedaB;
 Model izquiedaP;
 Model Harry;
+
 
 //SKYBOXES
 Skybox skyboxDia;
@@ -163,6 +167,13 @@ int main()
 	Harry = Model();
 	Harry.LoadModel("Models/harry.obj");
 
+	banca = Model();
+	banca.LoadModel("Models/banca.obj");
+	lamp2 = Model();
+	lamp2.LoadModel("Models/lamp_g.obj");
+	cabanaHagrid = Model();
+	cabanaHagrid.LoadModel("Models/hagrid.obj");
+
 	//CAMARAS
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.5f, 0.5f);
 	camaraAvatar = Camera(glm::vec3(2.0f, 2.0f, 0.5f), glm::vec3(0.0f, 1.0f, 0.0f), 180.0f, 0.0f, 0.3f, 0.5f);
@@ -201,6 +212,13 @@ int main()
 		0.5f, 0.09f, 0.032f);
 	pointLightCount++;
 
+	// luz lampara gis
+	pointLights[1] = PointLight(1.0f, 1.0f, 1.0f, // Color blanco
+		0.8f, 2.0f,
+		0.0f, 0.0f, 0.0f,
+		0.3f, 0.2f, 0.1f);
+	pointLightCount++;
+
 	unsigned int spotLightCount = 0;
 	//linterna
 	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
@@ -221,6 +239,8 @@ int main()
 	spotLightCount++;
 
 
+
+
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
 		uniformSpecularIntensity = 0, uniformShininess = 0, uniformTextureOffset=0;
 	GLuint uniformColor = 0;
@@ -229,12 +249,17 @@ int main()
 
 	glm::vec3 lowerLight(0.0f,0.0f,0.0f);
 
+
+
 	glm::mat4 model(1.0);
 	glm::mat4 modelaux(1.0);
 	glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
 	glm::vec2 toffset = glm::vec2(0.0f, 0.0f);
 	glm::vec3 sol;
 	glm::vec3 posicionModelo = glm::vec3(275.0f, 18.0f, 0.0f);
+
+	glm::mat4 nodoLamp2;
+	glm::vec4 posLuzLamp2;
 
 	float luzSolar = 0.5f;   
 	float cambioSolar = 0.00005;
@@ -349,8 +374,16 @@ int main()
 
 		anguloSol = glm::radians(180.0f * luzSolar);
 		sol.x = cos(anguloSol); sol.y = -1.0f; sol.z = 0.0f;
-		mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,(luzSolar * 0.3f),luzSolar, sol.x, sol.y, sol.z);
+		mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,(lu
+			zSolar * 0.3f),luzSolar, sol.x, sol.y, sol.z);
 		shaderList[0].SetDirectionalLight(&mainLight);
+
+		// jerarquía luz lampara gis (2)
+		nodoLamp2 = glm::mat4(1.0f);
+		nodoLamp2 = glm::translate(nodoLamp2, glm::vec3(100.0f, 20.0f, 100.0f));
+		nodoLamp2 = glm::scale(nodoLamp2, glm::vec3(2.0f, 2.0f, 2.0f));
+		posLuzLamp2 = nodoLamp2 * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		pointLights[1].SetPos(glm::vec3(posLuzLamp2));
 
 
 		//Lamparas
@@ -504,6 +537,19 @@ int main()
 		model = glm::translate(model, glm::vec3(0.0f, 10.f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		bleachers.RenderModel();
+
+		// cabana de hagrid
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(150.0f, 20.0f, 150.0f));
+		model = glm::scale(model, glm::vec3(12.0f, 12.0f, 12.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		cabanaHagrid.RenderModel();
+
+		// lampara gis
+		model = nodoLamp2; // Usamos el nodo que creamos para asegurar sincronía 1:1 con la luz
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		lamp2.RenderModel();
 
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(240.0f, 0.0f, -90.0f));
