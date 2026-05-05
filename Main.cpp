@@ -67,7 +67,7 @@ Model cabanaHagrid;
 
 
 Model lamp;
-Model lamp2; 
+Model lamp2;
 
 //MODELO AVATAR
 Model derechaB;
@@ -105,7 +105,7 @@ static const char* fShader = "shaders/shader_light.frag";
 
 void CreateShaders()
 {
-	Shader *shader1 = new Shader();
+	Shader* shader1 = new Shader();
 	shader1->CreateFromFiles(vShader, fShader);
 	shaderList.push_back(*shader1);
 }
@@ -120,12 +120,13 @@ int main()
 	CreateObjects(meshList);
 	CreateShaders();
 
+
 	//Texturas
 	pisoTexture = Texture("Textures/piso.tga");
 	pisoTexture.LoadTextureA();
 	parking = Texture("Textures/parking.jpg");
 	parking.LoadTextureA();
-	
+
 	//MODELOS
 	express = Model();
 	express.LoadModel("Models/express.obj");
@@ -206,17 +207,18 @@ int main()
 
 	unsigned int pointLightCount = 0;
 	//Declaración de primer luz puntual
-	pointLights[0] = PointLight(1.0f, 1.0f, 1.0f, 
-		0.6f, 1.0f, 
+	pointLights[0] = PointLight(1.0f, 1.0f, 1.0f,
+		0.6f, 1.0f,
 		0.0f, 0.0f, 0.f,
-		0.5f, 0.09f, 0.032f);
+		0.3f, 0.05f, 0.005f);
 	pointLightCount++;
+
 
 	// luz lampara gis
 	pointLights[1] = PointLight(1.0f, 1.0f, 1.0f, // Color blanco
-		0.8f, 2.0f,
+		0.8f, 1.0f,
 		0.0f, 0.0f, 0.0f,
-		0.3f, 0.2f, 0.1f);
+		0.3f, 0.05f, 0.005f);
 	pointLightCount++;
 
 	unsigned int spotLightCount = 0;
@@ -242,12 +244,12 @@ int main()
 
 
 	GLuint uniformProjection = 0, uniformModel = 0, uniformView = 0, uniformEyePosition = 0,
-		uniformSpecularIntensity = 0, uniformShininess = 0, uniformTextureOffset=0;
+		uniformSpecularIntensity = 0, uniformShininess = 0, uniformTextureOffset = 0;
 	GLuint uniformColor = 0;
 	glm::mat4 projection = glm::perspective(45.0f, (GLfloat)mainWindow.getBufferWidth() / mainWindow.getBufferHeight(), 0.1f, 1000.0f);
-	
 
-	glm::vec3 lowerLight(0.0f,0.0f,0.0f);
+
+	glm::vec3 lowerLight(0.0f, 0.0f, 0.0f);
 
 
 
@@ -261,7 +263,7 @@ int main()
 	glm::mat4 nodoLamp2;
 	glm::vec4 posLuzLamp2;
 
-	float luzSolar = 0.5f;   
+	float luzSolar = 0.5f;
 	float cambioSolar = 0.00005;
 	bool dia = false;
 	float anguloSol;
@@ -285,8 +287,8 @@ int main()
 		glfwPollEvents();
 
 		// CAMARA /////////////////////////////////////////////////////////7
-		GLfloat xChange = mainWindow.getXChange(),yChange = mainWindow.getYChange();
-		
+		GLfloat xChange = mainWindow.getXChange(), yChange = mainWindow.getYChange();
+
 		int camaraActiva = mainWindow.getCamaraActiva();
 
 		if (camaraActiva == 0)
@@ -297,8 +299,8 @@ int main()
 		}
 		else if (camaraActiva == 1)
 		{
-			glm::vec3 movAvatar = glm::normalize(glm::vec3(camaraAvatar.getCameraDirection().x,0.0f,camaraAvatar.getCameraDirection().z));
-			glm::vec3 vista = glm::normalize(glm::cross(movAvatar,glm::vec3(0.0f, 1.0f, 0.0f)));
+			glm::vec3 movAvatar = glm::normalize(glm::vec3(camaraAvatar.getCameraDirection().x, 0.0f, camaraAvatar.getCameraDirection().z));
+			glm::vec3 vista = glm::normalize(glm::cross(movAvatar, glm::vec3(0.0f, 1.0f, 0.0f)));
 			glm::vec3 camOffset = -movAvatar * 23.0f + glm::vec3(0.0f, 10.5f, 0.0f);
 			glm::vec3 camPos = posicionModelo + camOffset;
 
@@ -307,14 +309,14 @@ int main()
 			caminar = false;
 
 			camaraAvatar.mouseControl(xChange, yChange);
-			
+
 			//ANIMACION AVATAR
 			posicionModelo += (mainWindow.getMoverAdelante() ? movAvatar * deltaTime * 1.0f : glm::vec3(0.0f));
 			posicionModelo -= (mainWindow.getMoverAtras() ? movAvatar * deltaTime * 1.0f : glm::vec3(0.0f));
 			posicionModelo -= (mainWindow.getMoverIzquierda() ? vista * deltaTime * 1.0f : glm::vec3(0.0f));
 			posicionModelo += (mainWindow.getMoverDerecha() ? vista * deltaTime * 1.0f : glm::vec3(0.0f));
 
-			caminar = mainWindow.getMoverAdelante() ||mainWindow.getMoverAtras() ||mainWindow.getMoverIzquierda() || mainWindow.getMoverDerecha();
+			caminar = mainWindow.getMoverAdelante() || mainWindow.getMoverAtras() || mainWindow.getMoverIzquierda() || mainWindow.getMoverDerecha();
 		}
 		else
 		{
@@ -350,7 +352,7 @@ int main()
 
 		glUniformMatrix4fv(uniformProjection, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(activeCamera->calculateViewMatrix()));
-		glUniform3f(uniformEyePosition, activeCamera->getCameraPosition().x, activeCamera->getCameraPosition().y,activeCamera->getCameraPosition().z);
+		glUniform3f(uniformEyePosition, activeCamera->getCameraPosition().x, activeCamera->getCameraPosition().y, activeCamera->getCameraPosition().z);
 
 		SpotLight spotLightsToSend[MAX_SPOT_LIGHTS];
 		unsigned int activeSpotLights = 0;
@@ -364,36 +366,34 @@ int main()
 
 		// DIA A NOCHE /////////////////////////////////////////////
 		if (dia) {
-		luzSolar -= cambioSolar;
+			luzSolar -= cambioSolar;
 			if (luzSolar <= 0.005f) { luzSolar = 0.005f; dia = false; }
 		}
 		else {
 			luzSolar += cambioSolar;
-			if (luzSolar >= 0.9f) { luzSolar = 0.9f; dia = true;}
+			if (luzSolar >= 0.9f) { luzSolar = 0.9f; dia = true; }
 		}
 
 		anguloSol = glm::radians(180.0f * luzSolar);
 		sol.x = cos(anguloSol); sol.y = -1.0f; sol.z = 0.0f;
-		mainLight = DirectionalLight(1.0f, 1.0f, 1.0f,(lu
-			zSolar * 0.3f),luzSolar, sol.x, sol.y, sol.z);
+		mainLight = DirectionalLight(1.0f, 1.0f, 1.0f, (luzSolar * 0.3f), luzSolar, sol.x, sol.y, sol.z);
 		shaderList[0].SetDirectionalLight(&mainLight);
 
 		// jerarquía luz lampara gis (2)
 		nodoLamp2 = glm::mat4(1.0f);
-		nodoLamp2 = glm::translate(nodoLamp2, glm::vec3(100.0f, 20.0f, 100.0f));
-		nodoLamp2 = glm::scale(nodoLamp2, glm::vec3(2.0f, 2.0f, 2.0f));
+		nodoLamp2 = glm::translate(nodoLamp2, glm::vec3(-185.0f, 14.0f, -214.0f));
+		nodoLamp2 = glm::scale(nodoLamp2, glm::vec3(3.0f, 3.0f, 3.0f));
 		posLuzLamp2 = nodoLamp2 * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 		pointLights[1].SetPos(glm::vec3(posLuzLamp2));
 
-
 		//Lamparas
-		esNoche = luzSolar<0.28f;
+		esNoche = luzSolar < 0.28f;
 		if (esNoche)
 			shaderList[0].SetPointLights(pointLights, pointLightCount);
 		else
 			shaderList[0].SetPointLights(pointLights, 0);
 		//////////////////////////////////////////////////////////////777
-			
+
 
 		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
 
@@ -444,7 +444,7 @@ int main()
 		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
 		parking.UseTexture();
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		meshList[7]->RenderMesh();
+		meshList[2]->RenderMesh();
 
 		model = modelaux;
 		model = glm::translate(model, glm::vec3(-20.0f, 0.1f, 45.0f));
@@ -465,7 +465,8 @@ int main()
 		//HARRY
 		velArticulaciones += 0.5f * deltaTime;
 		float Articulaciones;
-		if (caminar) { Articulaciones = sin(glm::radians(velArticulaciones * 12.0f)) * glm::radians(30.0f); } else { Articulaciones = 0.0f; }
+		if (caminar) { Articulaciones = sin(glm::radians(velArticulaciones * 12.0f)) * glm::radians(30.0f); }
+		else { Articulaciones = 0.0f; }
 		angulo = atan2(camaraAvatar.getCameraDirection().x, camaraAvatar.getCameraDirection().z);
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, posicionModelo);
@@ -474,14 +475,14 @@ int main()
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Harry.RenderModel();
-		
+
 		//Pierna derecha
 		model = modelaux;
 		model = glm::translate(model, glm::vec3(-0.1f, -1.2f, -0.13f));
-		model = glm::rotate(model, -Articulaciones/3, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, -Articulaciones / 3, glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		derechaP.RenderModel();
-		
+
 		//Brazo Derecho
 		model = modelaux;
 		model = glm::translate(model, glm::vec3(-0.36f, 0.0f, 0.0f));
@@ -495,10 +496,10 @@ int main()
 		model = glm::rotate(model, Articulaciones / 3, glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		izquiedaP.RenderModel();
-		
+
 		//Brazo izquierdo
 		model = modelaux;
-		model = glm::translate(model, glm::vec3(0.42, 0.0,0.0f));
+		model = glm::translate(model, glm::vec3(0.42, 0.0, 0.0f));
 		model = glm::rotate(model, -Articulaciones, glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		izquiedaB.RenderModel();
@@ -540,17 +541,19 @@ int main()
 
 		// cabana de hagrid
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(150.0f, 20.0f, 150.0f));
+		model = glm::translate(model, glm::vec3(-200.0f, 20.f, -220.0f));
+		model = glm::rotate(model, 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(12.0f, 12.0f, 12.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		cabanaHagrid.RenderModel();
 
 		// lampara gis
-		model = nodoLamp2; // Usamos el nodo que creamos para asegurar sincronía 1:1 con la luz
+		model = nodoLamp2;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		lamp2.RenderModel();
 
+		//lamp 1
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(240.0f, 0.0f, -90.0f));
 		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
