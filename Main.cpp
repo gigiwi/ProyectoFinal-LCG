@@ -216,7 +216,7 @@ int main()
 
 	// luz lampara gis
 	pointLights[1] = PointLight(1.0f, 1.0f, 1.0f, // Color blanco
-		0.8f, 1.0f,
+		0.6f, 1.0f,
 		0.0f, 0.0f, 0.0f,
 		0.3f, 0.05f, 0.005f);
 	pointLightCount++;
@@ -260,8 +260,11 @@ int main()
 	glm::vec3 sol;
 	glm::vec3 posicionModelo = glm::vec3(275.0f, 18.0f, 0.0f);
 
+	glm::mat4 nodoLampara1;
+	glm::vec4 posLuzLamp1;
 	glm::mat4 nodoLamp2;
 	glm::vec4 posLuzLamp2;
+
 
 	float luzSolar = 0.5f;
 	float cambioSolar = 0.00005;
@@ -379,6 +382,15 @@ int main()
 		mainLight = DirectionalLight(1.0f, 1.0f, 1.0f, (luzSolar * 0.3f), luzSolar, sol.x, sol.y, sol.z);
 		shaderList[0].SetDirectionalLight(&mainLight);
 
+		// Jerarquía luz lampara javi 
+		nodoLampara1 = glm::mat4(1.0f);
+		nodoLampara1 = glm::translate(nodoLampara1, glm::vec3(240.0f, 0.0f, -90.0f));
+		nodoLampara1 = glm::scale(nodoLampara1, glm::vec3(10.0f, 10.0f, 10.0f));
+		nodoLampara1 = glm::rotate(nodoLampara1, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		posLuzLamp1 = nodoLampara1 * glm::vec4(-1.0f, 2.8f, 0.0f, 1.0f);
+		pointLights[0].SetPos(glm::vec3(posLuzLamp1));
+
+
 		// jerarquía luz lampara gis (2)
 		nodoLamp2 = glm::mat4(1.0f);
 		nodoLamp2 = glm::translate(nodoLamp2, glm::vec3(-185.0f, 14.0f, -214.0f));
@@ -389,10 +401,11 @@ int main()
 		//Lamparas
 		esNoche = luzSolar < 0.28f;
 		if (esNoche)
+
 			shaderList[0].SetPointLights(pointLights, pointLightCount);
 		else
 			shaderList[0].SetPointLights(pointLights, 0);
-		//////////////////////////////////////////////////////////////777
+		//////////////////////////////////////////////////////////////
 
 
 		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
@@ -553,17 +566,10 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		lamp2.RenderModel();
 
-		//lamp 1
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(240.0f, 0.0f, -90.0f));
-		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
-		model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		// lamp 1
+		model = nodoLampara1;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		lamp.RenderModel();
-
-		pointLights[0].SetPos(
-			glm::vec3(model * glm::vec4(0.0f, .0f, 0.0f, 1.0f))
-		);
 
 		glUseProgram(0);
 
