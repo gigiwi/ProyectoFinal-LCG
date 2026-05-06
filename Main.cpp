@@ -51,6 +51,7 @@ Camera camaraAvatar;
 Texture pisoTexture;
 Texture parking;
 
+//Ambiente
 Model express;
 Model estacion;
 Model hogwarts;
@@ -64,10 +65,17 @@ Model whitecar;
 Model cochesteam;
 Model banca;
 Model cabanaHagrid;
+Model pcenter;
 
-
+//Luces
 Model lamp;
 Model lamp2;
+
+//NPC
+Model magoMalo;
+Model magoBueno;
+Model mismagus;
+Model crow;
 
 //MODELO AVATAR
 Model derechaB;
@@ -150,7 +158,18 @@ int main()
 	rocas2.LoadModel("Models/rocas2.obj");
 	rocas3 = Model();
 	rocas3.LoadModel("Models/rocas3.obj");
+	pcenter = Model();
+	pcenter.LoadModel("Models/pcenter.obj");
 
+	//NPC 
+	magoMalo = Model();
+	magoMalo.LoadModel("Models/magoMalo.obj");
+	magoBueno = Model();
+	magoBueno.LoadModel("Models/magoBueno.obj");
+	mismagus = Model();
+	mismagus.LoadModel("Models/mismagus.obj");
+	crow = Model();
+	crow.LoadModel("Models/crow.obj");
 
 	//Modelos Luces
 	lamp = Model();
@@ -422,56 +441,7 @@ int main()
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		meshList[2]->RenderMesh();
 
-		//Hogwarts
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-720.0f, 0.1f, 0.0f));
-		model = glm::scale(model, glm::vec3(300.0f, 300.0f, 300.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		hogwarts.RenderModel();
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-90.0f, -25.0f, 345.0f));
-		model = glm::scale(model, glm::vec3(300.0f, 300.0f, 300.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		rocas1.RenderModel();
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(-110.0, -25.0f, -315.0f));
-		model = glm::scale(model, glm::vec3(300.0f, 300.0f, 300.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		rocas2.RenderModel();
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(390.0, -25.0f, -50.0f));
-		model = glm::scale(model, glm::vec3(300.0f, 300.0f, 200.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		rocas3.RenderModel();
 
-
-
-		//ESTACIONAMIENTO
-		model = glm::mat4(1.0);
-		model = glm::translate(model, glm::vec3(200.0f, 0.1f, 190.0f));
-		modelaux = model;
-		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(9.0f, 1.0f, 4.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
-		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
-		parking.UseTexture();
-		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
-		meshList[2]->RenderMesh();
-
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(-20.0f, 0.1f, 45.0f));
-		model = glm::scale(model, glm::vec3(12.0f, 12.0f, 12.0f));
-		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		whitecar.RenderModel();
-
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(24.0f, 0.1f, -45.0f));
-		model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
-		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		cochesteam.RenderModel();
 
 
 
@@ -517,6 +487,61 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		izquiedaB.RenderModel();
 
+		//Hogwarts
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-720.0f, 0.1f, 0.0f));
+		model = glm::scale(model, glm::vec3(300.0f, 300.0f, 300.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		hogwarts.RenderModel();
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-90.0f, -25.0f, 345.0f));
+		model = glm::scale(model, glm::vec3(300.0f, 300.0f, 300.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		rocas1.RenderModel();
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-110.0, -25.0f, -315.0f));
+		model = glm::scale(model, glm::vec3(300.0f, 300.0f, 300.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		rocas2.RenderModel();
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(390.0, -25.0f, -50.0f));
+		model = glm::scale(model, glm::vec3(300.0f, 300.0f, 200.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		rocas3.RenderModel();
+
+
+
+		//ESTACIONAMIENTO
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(200.0f, 0.1f, 190.0f));
+		modelaux = model;
+		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(9.0f, 1.0f, 4.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+		parking.UseTexture();
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[7]->RenderMesh();
+
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-20.0f, 0.1f, 45.0f));
+		model = glm::scale(model, glm::vec3(12.0f, 12.0f, 12.0f));
+		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		whitecar.RenderModel();
+
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(24.0f, 0.1f, -45.0f));
+		model = glm::scale(model, glm::vec3(7.0f, 7.0f, 7.0f));
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		cochesteam.RenderModel();
+
+
+
+	
+
 
 		//Express
 		model = glm::mat4(1.0f);
@@ -539,7 +564,12 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		estacion.RenderModel();
 
-		//cancha
+
+
+
+
+
+		//CANCHA POKEMON-HARRY
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.1f, -200.0f));
 		model = glm::scale(model, glm::vec3(1.2f, 1.2f, 1.2f));
@@ -551,6 +581,45 @@ int main()
 		model = glm::translate(model, glm::vec3(0.0f, 10.f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		bleachers.RenderModel();
+
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(-33.0f, 0.2f, 10.0f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		magoMalo.RenderModel();
+
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(38.0f, 0.2f, 10.0f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		model = glm::rotate(model, 90.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		magoBueno.RenderModel();
+
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(0.0f, 35.0f, 10.0f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		mismagus.RenderModel();
+
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(15.0f, 35.0f, 10.0f));
+		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
+		model = glm::rotate(model, 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		crow.RenderModel();
+
+
+
+		//CENTER
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.3f, 250.0f));
+		model = glm::scale(model, glm::vec3(0.7f, 0.7f, 0.7f));
+		model = glm::rotate(model, 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		pcenter.RenderModel();
+
+
 
 		// cabana de hagrid
 		model = glm::mat4(1.0f);
