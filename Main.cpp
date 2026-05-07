@@ -6,12 +6,15 @@
 #include <cmath>
 #include <vector>
 #include <math.h>
+
 #include <glew.h>
 #include <glfw3.h>
+
 #include <glm.hpp>
 #include <gtc\matrix_transform.hpp>
 #include <gtc\type_ptr.hpp>
 #include<assimp/Importer.hpp>
+
 #include "Window.h"
 #include "Mesh.h"
 #include "Shader_light.h"
@@ -41,6 +44,10 @@ float toffsetnumerou = 0.0f;
 float toffsetnumerov = 0.0f;
 float toffsetnumerocambiau = 0.0;
 
+// animacion snitch
+float movOffsetSnitch = 0.12f;
+float aleteoOffsetSnitch = 100.0f; // alas velocida
+
 
 Window mainWindow;
 std::vector<Shader> shaderList;
@@ -66,6 +73,9 @@ Model cochesteam;
 Model banca;
 Model cabanaHagrid;
 Model pcenter;
+Model snitchBase;
+Model snitchAlaDer;
+Model snitchAlaIzq;
 
 //Luces
 Model lamp;
@@ -98,6 +108,8 @@ GLfloat deltaTime = 0.0f;
 GLfloat lastTime = 0.0f;
 static double limitFPS = 1.0 / 60.0;
 
+float angulovaria = 0.0f;
+
 // luz direccional
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
@@ -111,12 +123,17 @@ static const char* vShader = "shaders/shader_light.vert";
 static const char* fShader = "shaders/shader_light.frag";
 
 
+
+
+
 void CreateShaders()
 {
 	Shader* shader1 = new Shader();
 	shader1->CreateFromFiles(vShader, fShader);
 	shaderList.push_back(*shader1);
 }
+
+
 
 
 int main()
@@ -160,6 +177,14 @@ int main()
 	rocas3.LoadModel("Models/rocas3.obj");
 	pcenter = Model();
 	pcenter.LoadModel("Models/pcenter.obj");
+
+	//MODELOS ANIMADOS
+	snitchBase = Model();
+	snitchBase.LoadModel("Models/snitchHarry.obj");
+	snitchAlaDer = Model();
+	snitchAlaDer.LoadModel("Models/snitchalaDerHarry.obj");
+	snitchAlaIzq = Model();
+	snitchAlaIzq.LoadModel("Models/snitchalaIzqHarry.obj");
 
 	//NPC 
 	magoMalo = Model();
@@ -271,7 +296,6 @@ int main()
 	glm::vec3 lowerLight(0.0f, 0.0f, 0.0f);
 
 
-
 	glm::mat4 model(1.0);
 	glm::mat4 modelaux(1.0);
 	glm::vec3 color = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -279,10 +303,18 @@ int main()
 	glm::vec3 sol;
 	glm::vec3 posicionModelo = glm::vec3(275.0f, 18.0f, 0.0f);
 
+	// Posiciones de las luces
 	glm::mat4 nodoLampara1;
 	glm::vec4 posLuzLamp1;
 	glm::mat4 nodoLamp2;
 	glm::vec4 posLuzLamp2;
+
+
+	// nodos para animacion de snitch
+	glm::mat4 nodoSnitchBase;
+	glm::mat4 nodoSnitchAlaDer;
+	glm::mat4 nodoSnitchAlaIzq;
+
 
 
 	float luzSolar = 0.5f;
@@ -305,6 +337,8 @@ int main()
 		deltaTime = now - lastTime;
 		deltaTime += (now - lastTime) / limitFPS;
 		lastTime = now;
+
+		angulovaria += 0.5f * deltaTime;
 
 		glfwPollEvents();
 
@@ -442,10 +476,8 @@ int main()
 		meshList[2]->RenderMesh();
 
 
+		//////////////// HARRY ////////////////////////////////////////////////////////
 
-
-
-		//HARRY
 		velArticulaciones += 0.5f * deltaTime;
 		float Articulaciones;
 		if (caminar) { Articulaciones = sin(glm::radians(velArticulaciones * 12.0f)) * glm::radians(30.0f); }
@@ -486,6 +518,9 @@ int main()
 		model = glm::rotate(model, -Articulaciones, glm::vec3(1.0f, 0.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		izquiedaB.RenderModel();
+
+		/////////////////////////////////////////////////////////////////////////////////
+
 
 		//Hogwarts
 		model = glm::mat4(1.0f);
@@ -539,10 +574,6 @@ int main()
 		cochesteam.RenderModel();
 
 
-
-	
-
-
 		//Express
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(324.0f, 0.1f, 0.0f));
@@ -566,10 +597,7 @@ int main()
 
 
 
-
-
-
-		//CANCHA POKEMON-HARRY
+		//CANCHA POKEMON-HARRY -----------------------------------------
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.1f, -200.0f));
 		model = glm::scale(model, glm::vec3(1.2f, 1.2f, 1.2f));
@@ -596,14 +624,16 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		magoBueno.RenderModel();
 
+		// Mismagius
 		model = modelaux;
-		model = glm::translate(model, glm::vec3(0.0f, 35.0f, 10.0f));
+		model = glm::translate(model, glm::vec3(0.0f, 35.0f + sin(angulovaria * 0.2f) * 0.5f, 10.0f)); //animacion de subida y bajada
 		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		mismagus.RenderModel();
 
+		// Crow
 		model = modelaux;
-		model = glm::translate(model, glm::vec3(15.0f, 35.0f, 10.0f));
+		model = glm::translate(model, glm::vec3(15.0f, 35.0f + sin(angulovaria * 0.2f) * 0.5f, 10.0f)); //animacion de subida y bajada
 		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
 		model = glm::rotate(model, 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -611,7 +641,7 @@ int main()
 
 
 
-		//CENTER
+		//CENTER POKEMON
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.3f, 250.0f));
 		model = glm::scale(model, glm::vec3(0.7f, 0.7f, 0.7f));
@@ -619,7 +649,32 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		pcenter.RenderModel();
 
+		//  SNITCH (animado )
+		float posX = -60.0f + (sin(angulovaria * movOffsetSnitch) * 25.0f);
+		float posZ = -150.0f;
+		float posY = 40.0f + (sin(angulovaria * movOffsetSnitch * 2.0f) * 8.0f);
 
+		nodoSnitchBase = glm::mat4(1.0f);
+		nodoSnitchBase = glm::translate(nodoSnitchBase, glm::vec3(posX, posY, posZ));
+		nodoSnitchBase = glm::scale(nodoSnitchBase, glm::vec3(1.5f, 1.5f, 1.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(nodoSnitchBase));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		snitchBase.RenderModel();
+
+		//aleteo alas
+		float anguloAleteo = sin(angulovaria * aleteoOffsetSnitch) * 35.0f;
+		//ala derecha
+		nodoSnitchAlaDer = nodoSnitchBase;
+		nodoSnitchAlaDer = glm::translate(nodoSnitchAlaDer, glm::vec3(-0.5f, 0.5f, 0.25f));
+		nodoSnitchAlaDer = glm::rotate(nodoSnitchAlaDer, anguloAleteo * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(nodoSnitchAlaDer));
+		snitchAlaDer.RenderModel();
+		// ala izquierda
+		nodoSnitchAlaIzq = nodoSnitchBase;
+		nodoSnitchAlaIzq = glm::translate(nodoSnitchAlaIzq, glm::vec3(0.5f, 0.5f, 0.25f));
+		nodoSnitchAlaIzq = glm::rotate(nodoSnitchAlaIzq, -anguloAleteo * toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(nodoSnitchAlaIzq));
+		snitchAlaIzq.RenderModel();
 
 		// cabana de hagrid
 		model = glm::mat4(1.0f);
