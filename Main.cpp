@@ -1,4 +1,3 @@
-
 #define STB_IMAGE_IMPLEMENTATION
 
 #include <stdio.h>
@@ -76,6 +75,8 @@ Model pcenter;
 Model snitchBase;
 Model snitchAlaDer;
 Model snitchAlaIzq;
+Model hatHarry;
+Model pokebola;
 
 //Luces
 Model lamp;
@@ -177,6 +178,8 @@ int main()
 	rocas3.LoadModel("Models/rocas3.obj");
 	pcenter = Model();
 	pcenter.LoadModel("Models/pcenter.obj");
+	hatHarry = Model();
+	hatHarry.LoadModel("Models/hat2.obj");
 
 	//MODELOS ANIMADOS
 	snitchBase = Model();
@@ -185,6 +188,9 @@ int main()
 	snitchAlaDer.LoadModel("Models/snitchalaDerHarry.obj");
 	snitchAlaIzq = Model();
 	snitchAlaIzq.LoadModel("Models/snitchalaIzqHarry.obj");
+	pokebola = Model();
+	pokebola.LoadModel("Models/pokebola.obj");
+
 
 	//NPC 
 	magoMalo = Model();
@@ -250,16 +256,29 @@ int main()
 
 
 	unsigned int pointLightCount = 0;
-	//Declaración de primer luz puntual
-	pointLights[0] = PointLight(1.0f, 1.0f, 1.0f,
-		0.6f, 1.0f,
-		0.0f, 0.0f, 0.f,
-		0.3f, 0.05f, 0.005f);
-	pointLightCount++;
 
+	// Posiciones de todas las lámparas "lamp.obj" faros
+	std::vector<glm::vec3> posicionesLamp1 = {
+		glm::vec3(240.0f, 0.0f, -90.0f),   // Lámpara 
+		glm::vec3(10.0f, 0.0f, -90.0f),
+		glm::vec3(-200.0f, 0.0f, -90.0f),
+		glm::vec3(240.0f, 0.0f, 90.0f),
+		glm::vec3(10.0f, 0.0f, 90.0f),
+		glm::vec3(-200.0f, 0.0f, 90.0f),
+		glm::vec3(240.0f, 0.0f, 280.0f),
+	};
+
+	//  Inicialización de las luces de lamp.obj
+	for (int i = 0; i < posicionesLamp1.size(); i++) {
+		pointLights[i] = PointLight(1.0f, 1.0f, 1.0f,
+			0.6f, 1.0f,
+			0.0f, 0.0f, 0.f,
+			0.3f, 0.01f, 0.005f);
+		pointLightCount++;
+	}
 
 	// luz lampara gis
-	pointLights[1] = PointLight(1.0f, 1.0f, 1.0f, // Color blanco
+	pointLights[posicionesLamp1.size()] = PointLight(1.0f, 1.0f, 1.0f, // Color blanco
 		0.6f, 1.0f,
 		0.0f, 0.0f, 0.0f,
 		0.3f, 0.05f, 0.005f);
@@ -284,6 +303,13 @@ int main()
 		15.0f);
 	spotLightCount++;
 
+	// Lista de posiciones calculadas para las bancas
+	std::vector<glm::vec3> posicionesBancas = {
+		glm::vec3(-10.0f, 6.5f, -60.0f),
+		glm::vec3(-218.0f, 6.5f, -60.0f),
+		glm::vec3(90.0f, 6.5f, 60.0f),
+		glm::vec3(-118.0f, 6.5f, 60.0f)
+	};
 
 
 
@@ -436,20 +462,24 @@ int main()
 		shaderList[0].SetDirectionalLight(&mainLight);
 
 		// Jerarquía luz lampara javi 
-		nodoLampara1 = glm::mat4(1.0f);
-		nodoLampara1 = glm::translate(nodoLampara1, glm::vec3(240.0f, 0.0f, -90.0f));
-		nodoLampara1 = glm::scale(nodoLampara1, glm::vec3(10.0f, 10.0f, 10.0f));
-		nodoLampara1 = glm::rotate(nodoLampara1, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		posLuzLamp1 = nodoLampara1 * glm::vec4(-1.0f, 2.8f, 0.0f, 1.0f);
-		pointLights[0].SetPos(glm::vec3(posLuzLamp1));
+		// calculo de posicion de las luces de cada lampara en base a su nodo
+		for (int i = 0; i < posicionesLamp1.size(); i++)
+		{
+			nodoLampara1 = glm::mat4(1.0f);
+			nodoLampara1 = glm::translate(nodoLampara1, posicionesLamp1[i]);
+			nodoLampara1 = glm::scale(nodoLampara1, glm::vec3(10.0f, 10.0f, 10.0f));
+			nodoLampara1 = glm::rotate(nodoLampara1, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+			posLuzLamp1 = nodoLampara1 * glm::vec4(-1.0f, 2.8f, 0.0f, 1.0f);
+			pointLights[i].SetPos(glm::vec3(posLuzLamp1));
+		}
 
 
-		// jerarquía luz lampara gis (2)
+		// jerarquía luz lampara gis)
 		nodoLamp2 = glm::mat4(1.0f);
 		nodoLamp2 = glm::translate(nodoLamp2, glm::vec3(-185.0f, 14.0f, -214.0f));
 		nodoLamp2 = glm::scale(nodoLamp2, glm::vec3(3.0f, 3.0f, 3.0f));
 		posLuzLamp2 = nodoLamp2 * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-		pointLights[1].SetPos(glm::vec3(posLuzLamp2));
+		pointLights[posicionesLamp1.size()].SetPos(glm::vec3(posLuzLamp2));
 
 		//Lamparas
 		esNoche = luzSolar < 0.28f;
@@ -487,6 +517,7 @@ int main()
 		model = glm::translate(model, posicionModelo);
 		model = glm::scale(model, glm::vec3(6.0f, 6.0f, 6.0f));
 		model = glm::rotate(model, angulo, glm::vec3(0.0f, 1.0f, 0.0f));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		modelaux = model;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Harry.RenderModel();
@@ -595,6 +626,19 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		estacion.RenderModel();
 
+		//banca
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		for (int i = 0; i < posicionesBancas.size(); i++)
+		{
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, posicionesBancas[i]);
+			if (posicionesBancas[i].z > 0) {
+				model = glm::rotate(model, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+			}
+			model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			banca.RenderModel();
+		}
 
 
 		//CANCHA POKEMON-HARRY -----------------------------------------
@@ -649,6 +693,16 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		pcenter.RenderModel();
 
+		//POKEBOLA (animada)
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(30.0f + sin(angulovaria * 0.2f) * 2.0f, 9.0f, 62.0f)); // animacion en x 
+		model = glm::rotate(model, ((sin(angulovaria * 0.2f) * 2.0f) * 50.0f) * toRadians, glm::vec3(0.0f, 0.0f, -1.0f)); //giro de la pokebola
+		model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		pokebola.RenderModel();
+
 		//  SNITCH (animado )
 		float posX = -60.0f + (sin(angulovaria * movOffsetSnitch) * 25.0f);
 		float posZ = -150.0f;
@@ -685,15 +739,31 @@ int main()
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		cabanaHagrid.RenderModel();
 
+		// sombrero
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-175.0f, 12.1f, -40.0f));
+		model = glm::scale(model, glm::vec3(5.0f, 5.0f, 5.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		hatHarry.RenderModel();
+
 		// lampara gis
 		model = nodoLamp2;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		lamp2.RenderModel();
 
 		// lamp 1
-		model = nodoLampara1;
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		lamp.RenderModel();
+		// dibujo de todas las copias de la lampara 
+		for (int i = 0; i < posicionesLamp1.size(); i++)
+		{
+			nodoLampara1 = glm::mat4(1.0f);
+			nodoLampara1 = glm::translate(nodoLampara1, posicionesLamp1[i]);
+			nodoLampara1 = glm::scale(nodoLampara1, glm::vec3(10.0f, 10.0f, 10.0f));
+			nodoLampara1 = glm::rotate(nodoLampara1, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+			model = nodoLampara1;
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			lamp.RenderModel();
+		}
 
 		glUseProgram(0);
 
@@ -702,5 +772,3 @@ int main()
 
 	return 0;
 }
-
-
