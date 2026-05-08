@@ -43,9 +43,6 @@ float toffsetnumerou = 0.0f;
 float toffsetnumerov = 0.0f;
 float toffsetnumerocambiau = 0.0;
 
-// animacion snitch
-float movOffsetSnitch = 0.12f;
-float aleteoOffsetSnitch = 100.0f; // alas velocida
 
 
 Window mainWindow;
@@ -77,16 +74,26 @@ Model snitchAlaDer;
 Model snitchAlaIzq;
 Model hatHarry;
 Model pokebola;
+Model libro;
+Model libroAlaDer;
+Model libroAlaIzq;
+Model healerPokemon;
+
 
 //Luces
 Model lamp;
 Model lamp2;
+//Model lamp3;
 
 //NPC
 Model magoMalo;
 Model magoBueno;
 Model mismagus;
 Model crow;
+
+Model pokemon;
+Model pokemon2;
+Model pokemon3;
 
 //MODELO AVATAR
 Model derechaB;
@@ -170,6 +177,10 @@ int main()
 	cochesteam.LoadModel("Models/cochesteam.obj");
 	hogwarts = Model();
 	hogwarts.LoadModel("Models/hogwarts.obj");
+	banca = Model();
+	banca.LoadModel("Models/banca.obj");
+	cabanaHagrid = Model();
+	cabanaHagrid.LoadModel("Models/hagrid.obj");
 	rocas1 = Model();
 	rocas1.LoadModel("Models/rocas1.obj");
 	rocas2 = Model();
@@ -181,6 +192,7 @@ int main()
 	hatHarry = Model();
 	hatHarry.LoadModel("Models/hat2.obj");
 
+
 	//MODELOS ANIMADOS
 	snitchBase = Model();
 	snitchBase.LoadModel("Models/snitchHarry.obj");
@@ -190,7 +202,12 @@ int main()
 	snitchAlaIzq.LoadModel("Models/snitchalaIzqHarry.obj");
 	pokebola = Model();
 	pokebola.LoadModel("Models/pokebola.obj");
-
+	libro = Model();
+	libro.LoadModel("Models/libro.obj");
+	libroAlaDer = Model();
+	libroAlaDer.LoadModel("Models/libroalaDer.obj");
+	libroAlaIzq = Model();
+	libroAlaIzq.LoadModel("Models/libroalaIzq.obj");
 
 	//NPC 
 	magoMalo = Model();
@@ -205,6 +222,10 @@ int main()
 	//Modelos Luces
 	lamp = Model();
 	lamp.LoadModel("Models/lamp.obj");
+	lamp2 = Model();
+	lamp2.LoadModel("Models/lamp_g.obj");
+	//lamp3 = Model();
+	//lamp3.LoadModel("Models/lamp3.obj");
 
 	//AVATAR
 	derechaB = Model();
@@ -218,12 +239,7 @@ int main()
 	Harry = Model();
 	Harry.LoadModel("Models/harry.obj");
 
-	banca = Model();
-	banca.LoadModel("Models/banca.obj");
-	lamp2 = Model();
-	lamp2.LoadModel("Models/lamp_g.obj");
-	cabanaHagrid = Model();
-	cabanaHagrid.LoadModel("Models/hagrid.obj");
+
 
 	//CAMARAS
 	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.5f, 0.5f);
@@ -257,9 +273,8 @@ int main()
 
 	unsigned int pointLightCount = 0;
 
-	// Posiciones de todas las lámparas "lamp.obj" faros
-	std::vector<glm::vec3> posicionesLamp1 = {
-		glm::vec3(240.0f, 0.0f, -90.0f),   // Lámpara 
+	// Posiciones de todas las lámparas "lamp3.obj" faros
+	std::vector<glm::vec3> posicionesLamp = {
 		glm::vec3(10.0f, 0.0f, -90.0f),
 		glm::vec3(-200.0f, 0.0f, -90.0f),
 		glm::vec3(240.0f, 0.0f, 90.0f),
@@ -269,7 +284,7 @@ int main()
 	};
 
 	//  Inicialización de las luces de lamp.obj
-	for (int i = 0; i < posicionesLamp1.size(); i++) {
+	for (int i = 0; i < posicionesLamp.size(); i++) {
 		pointLights[i] = PointLight(1.0f, 1.0f, 1.0f,
 			0.6f, 1.0f,
 			0.0f, 0.0f, 0.f,
@@ -278,7 +293,14 @@ int main()
 	}
 
 	// luz lampara gis
-	pointLights[posicionesLamp1.size()] = PointLight(1.0f, 1.0f, 1.0f, // Color blanco
+	pointLights[posicionesLamp.size()] = PointLight(1.0f, 1.0f, 1.0f, // Color blanco
+		0.6f, 1.0f,
+		0.0f, 0.0f, 0.0f,
+		0.3f, 0.05f, 0.005f);
+	pointLightCount++;
+
+	// luz lampara javi
+	pointLights[posicionesLamp.size() + 1] = PointLight(1.0f, 1.0f, 1.0f, // Color blanco
 		0.6f, 1.0f,
 		0.0f, 0.0f, 0.0f,
 		0.3f, 0.05f, 0.005f);
@@ -330,6 +352,8 @@ int main()
 	glm::vec3 posicionModelo = glm::vec3(275.0f, 18.0f, 0.0f);
 
 	// Posiciones de las luces
+	glm::mat4 nodoLamp;
+	glm::vec4 posLuzLamp;
 	glm::mat4 nodoLampara1;
 	glm::vec4 posLuzLamp1;
 	glm::mat4 nodoLamp2;
@@ -340,7 +364,43 @@ int main()
 	glm::mat4 nodoSnitchBase;
 	glm::mat4 nodoSnitchAlaDer;
 	glm::mat4 nodoSnitchAlaIzq;
+	float movOffsetSnitch = 0.12f;
+	float aleteoOffsetSnitch = 100.0f; // alas velocida
 
+
+	// animacion tren
+	float avanceTren = 0.0f;
+
+	// nodos para animacion libro
+	glm::mat4 nodoLibro;
+	glm::mat4 nodoLibroAlaDer;
+	glm::mat4 nodoLibroAlaIzq;
+
+	// grupo 1 libros 
+	float offsetLibroX = -150.0f;
+	float offsetDirLibro = 1.0f;
+	float offsetGiroLibro = 0.01f;
+	float offsetGiroObjetivo = 0.0f;
+
+	std::vector<glm::vec3> posicionesCopiasLibros = {
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(0.0f, 0.0f, 120.0f),
+		glm::vec3(240.0f, 0.0f, 0.0f),
+		glm::vec3(240.0f, 0.0f, 150.0f)
+	};
+
+	// grupo 2 libros (direccion opuesta) 
+	float offsetLibroX2 = -50.0f;
+	float offsetDirLibro2 = -1.0f;
+	float offsetGiroLibro2 = 180.0f;
+	float offsetGiroObjetivo2 = 180.0f;
+
+	std::vector<glm::vec3> posicionesCopiasLibros2 = {
+		glm::vec3(0.0f, 20.0f, 40.0f),
+		glm::vec3(0.0f, 20.0f, 160.0f),
+		glm::vec3(240.0f, 20.0f, 40.0f),
+		glm::vec3(240.0f, 20.0f, 190.0f)
+	};
 
 
 	float luzSolar = 0.5f;
@@ -461,25 +521,33 @@ int main()
 		mainLight = DirectionalLight(1.0f, 1.0f, 1.0f, (luzSolar * 0.3f), luzSolar, sol.x, sol.y, sol.z);
 		shaderList[0].SetDirectionalLight(&mainLight);
 
-		// Jerarquía luz lampara javi 
-		// calculo de posicion de las luces de cada lampara en base a su nodo
-		for (int i = 0; i < posicionesLamp1.size(); i++)
+
+		// Calculo de posiciones de las luces de los faros lamp.obj
+		for (int i = 0; i < posicionesLamp.size(); i++)
 		{
-			nodoLampara1 = glm::mat4(1.0f);
-			nodoLampara1 = glm::translate(nodoLampara1, posicionesLamp1[i]);
-			nodoLampara1 = glm::scale(nodoLampara1, glm::vec3(10.0f, 10.0f, 10.0f));
-			nodoLampara1 = glm::rotate(nodoLampara1, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-			posLuzLamp1 = nodoLampara1 * glm::vec4(-1.0f, 2.8f, 0.0f, 1.0f);
-			pointLights[i].SetPos(glm::vec3(posLuzLamp1));
+			nodoLamp = glm::mat4(1.0f);
+			nodoLamp = glm::translate(nodoLamp, posicionesLamp[i]);
+			nodoLamp = glm::scale(nodoLamp, glm::vec3(10.0f, 10.0f, 10.0f));
+			nodoLamp = glm::rotate(nodoLamp, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+			posLuzLamp = nodoLamp * glm::vec4(-1.0f, 2.8f, 0.0f, 1.0f);
+			pointLights[i].SetPos(glm::vec3(posLuzLamp));
+
 		}
 
+		// Jerarquía luz lampara javi 
+
+		nodoLampara1 = glm::mat4(1.0f);
+		nodoLampara1 = glm::translate(nodoLampara1, glm::vec3(240.0f, 0.0f, -90.0f));
+		nodoLampara1 = glm::scale(nodoLampara1, glm::vec3(10.0f, 10.0f, 10.0f));
+		posLuzLamp1 = nodoLampara1 * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		pointLights[posicionesLamp.size()].SetPos(glm::vec3(posLuzLamp1));
 
 		// jerarquía luz lampara gis)
 		nodoLamp2 = glm::mat4(1.0f);
 		nodoLamp2 = glm::translate(nodoLamp2, glm::vec3(-185.0f, 14.0f, -214.0f));
 		nodoLamp2 = glm::scale(nodoLamp2, glm::vec3(3.0f, 3.0f, 3.0f));
 		posLuzLamp2 = nodoLamp2 * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-		pointLights[posicionesLamp1.size()].SetPos(glm::vec3(posLuzLamp2));
+		pointLights[posicionesLamp.size()].SetPos(glm::vec3(posLuzLamp2));
 
 		//Lamparas
 		esNoche = luzSolar < 0.28f;
@@ -606,19 +674,27 @@ int main()
 
 
 		//Express
+		if (avanceTren < 220.0f) {
+			avanceTren += 0.12f * deltaTime;
+		}
+		else {
+			avanceTren = 220.0f;
+		}
+
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(324.0f, 0.1f, 0.0f));
+		model = glm::translate(model, glm::vec3(324.0f, 0.1f, -220.0f + avanceTren));
 		modelaux = model;
 		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		express.RenderModel();
 
 		//Vias
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, -20.0f));
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(324.0f, 0.1f, -20.0f));
 		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 2.6f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		vias.RenderModel();
+
 		//Estacion
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(280.0f, 0.0f, 0.0f));
@@ -670,7 +746,8 @@ int main()
 
 		// Mismagius
 		model = modelaux;
-		model = glm::translate(model, glm::vec3(0.0f, 35.0f + sin(angulovaria * 0.2f) * 0.5f, 10.0f)); //animacion de subida y bajada
+		model = glm::translate(model, glm::vec3(0.0f, 35.0f + sin(angulovaria * 0.2f) * 0.5f, 10.0f));
+		//animacion de subida y bajada
 		model = glm::scale(model, glm::vec3(0.4f, 0.4f, 0.4f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		mismagus.RenderModel();
@@ -693,6 +770,16 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		pcenter.RenderModel();
 
+		//healer pokemon
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.3f, 20.0f));
+		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		healerPokemon.RenderModel();
+
+		// declaración de pokemones
+
+
 		//POKEBOLA (animada)
 
 		model = glm::mat4(1.0f);
@@ -703,7 +790,7 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		pokebola.RenderModel();
 
-		//  SNITCH (animado )
+		//  SNITCH (animado ) -------------------------------------------
 		float posX = -60.0f + (sin(angulovaria * movOffsetSnitch) * 25.0f);
 		float posZ = -150.0f;
 		float posY = 40.0f + (sin(angulovaria * movOffsetSnitch * 2.0f) * 8.0f);
@@ -730,6 +817,84 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(nodoSnitchAlaIzq));
 		snitchAlaIzq.RenderModel();
 
+		// LIBRO ANIMADO-----------------------
+
+		// grupo 1 libros movimiento
+		offsetLibroX += 0.7f * offsetDirLibro * deltaTime;
+		if (offsetLibroX >= -80.0f) { //Desplazamiento máximo hacia la derecha
+			offsetLibroX = -80.0f;
+			offsetDirLibro = -1.0f;
+			offsetGiroObjetivo = 180.0f;
+		}
+		else if (offsetLibroX <= -290.0f) { //Desplazamiento máximo hacia la izquierda
+			offsetLibroX = -290.0f;
+			offsetDirLibro = 1.0f;
+			offsetGiroObjetivo = 0.0f;
+		}
+		offsetGiroLibro += (offsetGiroObjetivo - offsetGiroLibro) * 0.7f * deltaTime;
+
+		// grupo 2 libros movimiento (direccion opuesta) 
+		offsetLibroX2 += 0.7f * offsetDirLibro2 * deltaTime;
+		if (offsetLibroX2 >= -80.0f) { //Desplazamiento máximo hacia la derecha
+			offsetLibroX2 = -80.0f;
+			offsetDirLibro2 = -1.0f;
+			offsetGiroObjetivo2 = 180.0f;
+		}
+		else if (offsetLibroX2 <= -280.0f) { //desplazamiento máximo hacia la izquierda
+			offsetLibroX2 = -280.0f;
+			offsetDirLibro2 = 1.0f;
+			offsetGiroObjetivo2 = 0.0f;
+		}
+		offsetGiroLibro2 += (offsetGiroObjetivo2 - offsetGiroLibro2) * 0.7f * deltaTime;
+
+
+		// Renderizado grupo 1 libros
+		for (int i = 0; i < posicionesCopiasLibros.size(); i++)
+		{
+			nodoLibro = glm::mat4(1.0f);
+			nodoLibro = glm::translate(nodoLibro, glm::vec3(offsetLibroX + posicionesCopiasLibros[i].x, 45.0f + (sin(angulovaria * 0.3f) * 3.0f) + posicionesCopiasLibros[i].y, -60.0f + posicionesCopiasLibros[i].z));
+			nodoLibro = glm::rotate(nodoLibro, offsetGiroLibro * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+			nodoLibro = glm::scale(nodoLibro, glm::vec3(3.5f, 3.5f, 3.5f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(nodoLibro));
+			libro.RenderModel();
+
+			nodoLibroAlaDer = nodoLibro;
+			nodoLibroAlaDer = glm::translate(nodoLibroAlaDer, glm::vec3(0.0f, 0.0f, -0.2f));
+			nodoLibroAlaDer = glm::rotate(nodoLibroAlaDer, (sin(angulovaria * 0.8f) * 30.0f) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(nodoLibroAlaDer));
+			libroAlaDer.RenderModel();
+
+			nodoLibroAlaIzq = nodoLibro;
+			nodoLibroAlaIzq = glm::translate(nodoLibroAlaIzq, glm::vec3(0.0f, 0.0f, 0.2f));
+			nodoLibroAlaIzq = glm::rotate(nodoLibroAlaIzq, -(sin(angulovaria * 0.8f) * 30.0f) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(nodoLibroAlaIzq));
+			libroAlaIzq.RenderModel();
+		}
+
+		// Renderizado grupo 2 libros
+		for (int i = 0; i < posicionesCopiasLibros2.size(); i++)
+		{
+			nodoLibro = glm::mat4(1.0f);
+			// Usamos offsetLibroX2 y offsetGiroLibro2. El desfase en Y y Z ya viene dentro de posicionesCopiasLibros2.
+			nodoLibro = glm::translate(nodoLibro, glm::vec3(offsetLibroX2 + posicionesCopiasLibros2[i].x, 45.0f + (sin(angulovaria * 0.3f) * 3.0f) + posicionesCopiasLibros2[i].y, -60.0f + posicionesCopiasLibros2[i].z));
+			nodoLibro = glm::rotate(nodoLibro, offsetGiroLibro2 * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+			nodoLibro = glm::scale(nodoLibro, glm::vec3(3.5f, 3.5f, 3.5f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(nodoLibro));
+			libro.RenderModel();
+
+			nodoLibroAlaDer = nodoLibro;
+			nodoLibroAlaDer = glm::translate(nodoLibroAlaDer, glm::vec3(0.0f, 0.0f, -0.2f));
+			nodoLibroAlaDer = glm::rotate(nodoLibroAlaDer, (sin(angulovaria * 0.8f) * 30.0f) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(nodoLibroAlaDer));
+			libroAlaDer.RenderModel();
+
+			nodoLibroAlaIzq = nodoLibro;
+			nodoLibroAlaIzq = glm::translate(nodoLibroAlaIzq, glm::vec3(0.0f, 0.0f, 0.2f));
+			nodoLibroAlaIzq = glm::rotate(nodoLibroAlaIzq, -(sin(angulovaria * 0.8f) * 30.0f) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(nodoLibroAlaIzq));
+			libroAlaIzq.RenderModel();
+		}
+
 		// cabana de hagrid
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(-200.0f, 20.f, -220.0f));
@@ -746,6 +911,7 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		hatHarry.RenderModel();
 
+
 		// lampara gis
 		model = nodoLamp2;
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -753,10 +919,10 @@ int main()
 
 		// lamp 1
 		// dibujo de todas las copias de la lampara 
-		for (int i = 0; i < posicionesLamp1.size(); i++)
+		for (int i = 0; i < posicionesLamp.size(); i++)
 		{
 			nodoLampara1 = glm::mat4(1.0f);
-			nodoLampara1 = glm::translate(nodoLampara1, posicionesLamp1[i]);
+			nodoLampara1 = glm::translate(nodoLampara1, posicionesLamp[i]);
 			nodoLampara1 = glm::scale(nodoLampara1, glm::vec3(10.0f, 10.0f, 10.0f));
 			nodoLampara1 = glm::rotate(nodoLampara1, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
