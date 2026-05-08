@@ -53,6 +53,7 @@ Camera camaraAvatar;
 
 Texture pisoTexture;
 Texture parking;
+Texture pasillo;
 
 //Ambiente
 Model express;
@@ -159,6 +160,8 @@ int main()
 	pisoTexture.LoadTextureA();
 	parking = Texture("Textures/parking.jpg");
 	parking.LoadTextureA();
+	pasillo = Texture("Textures/pasillo.jpg");
+	pasillo.LoadTextureA();
 
 	//MODELOS
 	express = Model();
@@ -715,6 +718,20 @@ int main()
 			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 			banca.RenderModel();
 		}
+
+		// PASILLO
+		model = glm::mat4(1.0);
+		model = glm::translate(model, glm::vec3(-100.0f, 0.1f, 0.0f));
+		modelaux = model;
+		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(5.0f, 1.0f, 27.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform3fv(uniformColor, 1, glm::value_ptr(color));
+		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
+		pasillo.UseTexture();
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[8]->RenderMesh();
+
 
 
 		//CANCHA POKEMON-HARRY -----------------------------------------
