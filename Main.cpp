@@ -245,7 +245,7 @@ int main()
 
 
 	//CAMARAS
-	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 0.5f, 0.5f);
+	camera = Camera(glm::vec3(0.0f, 300.0f, 0.0f),glm::vec3(0.0f, 1.0f, 0.0f),-90.0f,-89.0f,0.5f,0.5f);
 	camaraAvatar = Camera(glm::vec3(2.0f, 2.0f, 0.5f), glm::vec3(0.0f, 1.0f, 0.0f), 180.0f, 0.0f, 0.3f, 0.5f);
 
 
@@ -284,6 +284,7 @@ int main()
 		glm::vec3(10.0f, 0.0f, 90.0f),
 		glm::vec3(-200.0f, 0.0f, 90.0f),
 		glm::vec3(240.0f, 0.0f, 280.0f),
+		glm::vec3(240.0f, 0.0f, -90.0f)
 	};
 
 	//  Inicialización de las luces de lamp.obj
@@ -319,14 +320,6 @@ int main()
 		5.0f);
 	spotLightCount++;
 
-	//luz fija
-	spotLights[1] = SpotLight(0.0f, 0.0f, 1.0f,
-		1.0f, 2.0f,
-		5.0f, 10.0f, 0.0f,
-		0.0f, -5.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		15.0f);
-	spotLightCount++;
 
 	// Lista de posiciones calculadas para las bancas
 	std::vector<glm::vec3> posicionesBancas = {
@@ -406,7 +399,7 @@ int main()
 	};
 
 
-	float luzSolar = 0.5f;
+	float luzSolar = 0.1f;
 	float cambioSolar = 0.00005;
 	bool dia = false;
 	float anguloSol;
@@ -440,7 +433,6 @@ int main()
 		{
 			activeCamera = &camera;
 			camera.keyControl(mainWindow.getsKeys(), deltaTime);
-			camera.mouseControl(xChange, yChange);
 		}
 		else if (camaraActiva == 1)
 		{
@@ -550,7 +542,7 @@ int main()
 		nodoLamp2 = glm::translate(nodoLamp2, glm::vec3(-185.0f, 14.0f, -214.0f));
 		nodoLamp2 = glm::scale(nodoLamp2, glm::vec3(3.0f, 3.0f, 3.0f));
 		posLuzLamp2 = nodoLamp2 * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-		pointLights[posicionesLamp.size()].SetPos(glm::vec3(posLuzLamp2));
+		pointLights[posicionesLamp.size()+1].SetPos(glm::vec3(posLuzLamp2));
 
 		//Lamparas
 		esNoche = luzSolar < 0.28f;
@@ -819,6 +811,7 @@ int main()
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		snitchBase.RenderModel();
 
+
 		//aleteo alas
 		float anguloAleteo = sin(angulovaria * aleteoOffsetSnitch) * 35.0f;
 		//ala derecha
@@ -856,7 +849,7 @@ int main()
 			offsetLibroX2 = -80.0f;
 			offsetDirLibro2 = -1.0f;
 			offsetGiroObjetivo2 = 180.0f;
-		}
+		} 
 		else if (offsetLibroX2 <= -280.0f) { //desplazamiento máximo hacia la izquierda
 			offsetLibroX2 = -280.0f;
 			offsetDirLibro2 = 1.0f;
