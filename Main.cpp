@@ -78,7 +78,7 @@ Model pokebola;
 Model libro;
 Model libroAlaDer;
 Model libroAlaIzq;
-Model healerPokemon;
+Model lucario;
 
 
 //Luces
@@ -221,6 +221,9 @@ int main()
 	mismagus.LoadModel("Models/mismagus.obj");
 	crow = Model();
 	crow.LoadModel("Models/crow.obj");
+	lucario = Model();
+	lucario.LoadModel("Models/lucario.obj");
+
 
 	//Modelos Luces
 	lamp = Model();
@@ -779,14 +782,14 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		pcenter.RenderModel();
 
-		//healer pokemon
+		//LUCARIO (PRINCIPAL)
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.3f, 20.0f));
-		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
+		model = glm::scale(model, glm::vec3(15.0f, 15.0f, 15.0f));
+		model = glm::rotate(model, 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		healerPokemon.RenderModel();
+		lucario.RenderModel();
 
-		// declaración de pokemones
 
 
 		//POKEBOLA (animada)
