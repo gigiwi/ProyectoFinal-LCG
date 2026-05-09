@@ -21,8 +21,9 @@ public:
 	bool getMoverDerecha() { return moverDerecha; }
 	bool getMoverTren() { return trenMover; }
 	void setMoverTren(bool value);
-
-	bool* getLucesSpot() { return lucesSpot; }
+	bool escena1() { return escenaC; }
+	bool escena2() { return escenaB; }
+	bool escena3() { return escenaM; }
 
 	bool getShouldClose() {
 		return  glfwWindowShouldClose(mainWindow);
@@ -52,7 +53,9 @@ private:
 	bool moverIzquierda;
 	bool moverDerecha;
 	bool trenMover;
-
+	bool escenaC;
+	bool escenaB;
+	bool escenaM;
 
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);
 	static void ManejaMouse(GLFWwindow* window, double xPos, double yPos);

@@ -86,6 +86,12 @@ void Camera::setPosition(glm::vec3 pos)
 	position = pos;
 }
 
+void Camera::setYaw(float yaw)
+{
+	this->yaw = yaw;
+	update();
+}
+
 void Camera::update()
 {
 	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));

@@ -20,6 +20,11 @@ Window::Window(GLint windowWidth, GLint windowHeight)
     moverIzquierda = false;
     moverDerecha = false;
 	trenMover = false;
+	trenMover = false;
+
+	escenaC = false;
+	escenaB = false;
+	escenaM = false;
 
 	for (size_t i = 0; i < 1024; i++)
 	{
@@ -43,7 +48,7 @@ int Window::Initialise()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
 	//CREAR VENTANA
-	mainWindow = glfwCreateWindow(width, height, "PracticaXX:Nombre de la practica", NULL, NULL);
+	mainWindow = glfwCreateWindow(width, height, "Proyecto Computacion Grafica", NULL, NULL);
 
 	if (!mainWindow)
 	{
@@ -131,10 +136,10 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 			theWindow->camaraActiva = 0; // aérea
 		}
 		if (key == GLFW_KEY_2) {
-			theWindow->camaraActiva = 1; // tercera persona
+			theWindow->camaraActiva = 1; // avatar
 		}
 		if (key == GLFW_KEY_3) {
-			theWindow->camaraActiva = 2; // PUESTOS
+			theWindow->camaraActiva = 2; //escenarios
 		}
 	}
 
@@ -151,6 +156,22 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 	if (key == GLFW_KEY_G && action == GLFW_PRESS)
 	{
 		theWindow->trenMover = !theWindow->trenMover;
+	}
+
+
+	if (key == GLFW_KEY_C && action == GLFW_PRESS)
+	{
+		theWindow->escenaC = !theWindow->escenaC;
+	}
+
+	if (key == GLFW_KEY_B && action == GLFW_PRESS)
+	{
+		theWindow->escenaB = !theWindow->escenaB;
+	}
+
+	if (key == GLFW_KEY_M && action == GLFW_PRESS)
+	{
+		theWindow->escenaM = !theWindow->escenaM;
 	}
 
 

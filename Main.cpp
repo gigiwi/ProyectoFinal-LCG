@@ -1,3 +1,14 @@
+
+/*
+PROYECTO FINAL COMPUTACION GRAFICA
+
+Integrantes: 
+
+	Reyes Herrera Vanessa Giselle
+	Velasco Pacheco Javier
+
+*/
+
 #define STB_IMAGE_IMPLEMENTATION
 
 #include <stdio.h>
@@ -50,11 +61,13 @@ std::vector<Shader> shaderList;
 
 Camera camera;
 Camera camaraAvatar;
+Camera camaraEscenarios;
 
 Texture pisoTexture;
 Texture parking;
 Texture pasillo;
 Texture humo;
+
 
 //Ambiente
 Model express;
@@ -81,7 +94,8 @@ Model libroAlaDer;
 Model libroAlaIzq;
 Model maquinaTiempo;
 Model bolaLucario;
-
+Model engrane;
+Model casa;
 
 
 //Luces
@@ -126,6 +140,8 @@ float angulovaria = 0.0f;
 DirectionalLight mainLight;
 PointLight pointLights[MAX_POINT_LIGHTS];
 SpotLight spotLights[MAX_SPOT_LIGHTS];
+SpotLight temp[2];
+
 int camaraAnterior = -1;
 
 // Vertex Shader
@@ -159,7 +175,7 @@ int main()
 
 
 	//Texturas
-	pisoTexture = Texture("Textures/piso.tga");
+	pisoTexture = Texture("Textures/piso.jpg");
 	pisoTexture.LoadTextureA();
 	parking = Texture("Textures/parking.jpg");
 	parking.LoadTextureA();
@@ -167,6 +183,7 @@ int main()
 	pasillo.LoadTextureA();
 	humo = Texture("Textures/humo.png");
 	humo.LoadTextureA();
+
 
 	//MODELOS
 	express = Model();
@@ -201,7 +218,10 @@ int main()
 	hatHarry.LoadModel("Models/hat2.obj");
 	maquinaTiempo = Model();
 	maquinaTiempo.LoadModel("Models/maquinaTiempo.obj");
-
+	engrane = Model();
+	engrane.LoadModel("Models/engrane.obj");
+	casa = Model();
+	casa.LoadModel("Models/casaSteam.obj");
 
 	//MODELOS ANIMADOS
 	snitchBase = Model();
@@ -219,7 +239,7 @@ int main()
 	libroAlaIzq = Model();
 	libroAlaIzq.LoadModel("Models/libroalaIzq.obj");
 	bolaLucario = Model();
-	bolaLucario.LoadModel("Models/bolaLucario.obj");
+	bolaLucario.LoadModel("Models/BolaLucario.obj");
 
 	//NPC 
 	magoMalo = Model();
@@ -260,6 +280,8 @@ int main()
 	//CAMARAS
 	camera = Camera(glm::vec3(0.0f, 300.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -89.0f, 0.5f, 0.5f);
 	camaraAvatar = Camera(glm::vec3(2.0f, 2.0f, 0.5f), glm::vec3(0.0f, 1.0f, 0.0f), 180.0f, 0.0f, 0.3f, 0.5f);
+	camaraEscenarios = Camera(glm::vec3(0.0f, 100.0f, -300.0f), glm::vec3(0.0f, 1.0f, 0.0f), 90.0f, -45.0f, 0.0f, 0.0f);
+
 
 
 	//SKYBOXES
@@ -322,15 +344,34 @@ int main()
 		0.3f, 0.05f, 0.005f);
 	pointLightCount++;
 
+
+	
 	unsigned int spotLightCount = 0;
-	//linterna
 	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
-		0.0f, 2.0f,
-		0.0f, 0.0f, 0.0f,
+		2.0f, 5.0f,
+		180.0f, 50.3f, -140.0f,
 		0.0f, -1.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		5.0f);
+		0.0f, 0.1f, 0.0f,
+		60.0f);
 	spotLightCount++;
+
+
+	spotLights[1] = SpotLight(1.0f, 1.0f, 0.0f,
+		2.0f, 5.0f,
+		49.9f, 50.3f, -140.0f,
+		0.0f, -1.0f, 0.0f,
+		0.0f, 0.08f, 0.0f,
+		30.0f);
+	spotLightCount++;
+
+	spotLights[2] = SpotLight(0.3f, 0.5f, 0.8f,
+		2.0f, 5.0f,
+		49.9f, 50.3f, -140.0f,
+		0.0f, -1.0f, 0.0f,
+		0.0f, 0.08f, 0.0f,
+		30.0f);
+	spotLightCount++;
+
 
 
 	// Lista de posiciones calculadas para las bancas
@@ -410,9 +451,12 @@ int main()
 		glm::vec3(240.0f, 20.0f, 190.0f)
 	};
 
+	glm::vec3 posKame(15.0f, 15.0f, 0.0f);
+	glm::vec3 direccionKame(1.0f, 0.0f, 0.0f);
 
-	float luzSolar = 0.1f;
-	float cambioSolar = 0.00005;
+	// Animacion dia y noche / Avatar
+	float luzSolar = 0.75f;
+	float cambioSolar = 0.00010;
 	bool dia = false;
 	float anguloSol;
 	float angulo;
@@ -421,8 +465,31 @@ int main()
 	float cambioDiaNoche;
 	float velArticulaciones = 0.0f;
 	float Articulaciones;
-	static bool gPresionada = false;
 
+
+	//Animacion Kamehameha
+	bool lanzarKame = false;
+	bool creciendo = false;
+	bool moviendo = false;
+	float escalaKame = 1.0f;
+	float escalaMax = 30.0f;
+	float velocidadKame = 0.5f;
+	float distanciaRecorrida = 0.0f;
+	float distanciaMax = 85.0f;
+
+	//Animacion Engrane
+	float anguloEngrane = 0.0f;
+
+	//Luces Pointlight
+
+	glm::vec3 objeto;
+	glm::vec3 luz;
+	glm::vec3 Pos;
+	glm::vec3 Dir;
+
+	bool c;
+	bool b;
+	bool m;
 
 	while (!mainWindow.getShouldClose())
 	{
@@ -468,6 +535,26 @@ int main()
 
 			caminar = mainWindow.getMoverAdelante() || mainWindow.getMoverAtras() || mainWindow.getMoverIzquierda() || mainWindow.getMoverDerecha();
 		}
+		else if (camaraActiva == 2)
+		{
+			activeCamera = &camaraEscenarios;
+
+			camaraEscenarios.mouseControl(xChange, yChange);
+
+			if (mainWindow.getsKeys()[GLFW_KEY_X]) {
+				camaraEscenarios = Camera(glm::vec3(0.0f, 100.0f, -300.0f), glm::vec3(0.0f, 1.0f, 0.0f), 90.0f, -45.0f, 0.0f, 0.0f);
+			}
+			
+			if (mainWindow.getsKeys()[GLFW_KEY_V]) {
+				camaraEscenarios = Camera(glm::vec3(150.0f, 25.0f, 290.0f), glm::vec3(0.0f, 1.0f, 0.0f), -45.0f, -15.0f, 0.0f, 0.0f);
+			}
+
+			
+			if (mainWindow.getsKeys()[GLFW_KEY_N]) {
+				camaraEscenarios = Camera(glm::vec3(-220.0f, 15.0f, 150.0f), glm::vec3(0.0f, 1.0f, 0.0f), 25.0f, 0.0f, 0.0f, 0.0f);
+			}
+
+		}
 		else
 		{
 			activeCamera = &camaraAvatar;
@@ -504,14 +591,8 @@ int main()
 		glUniformMatrix4fv(uniformView, 1, GL_FALSE, glm::value_ptr(activeCamera->calculateViewMatrix()));
 		glUniform3f(uniformEyePosition, activeCamera->getCameraPosition().x, activeCamera->getCameraPosition().y, activeCamera->getCameraPosition().z);
 
-		SpotLight spotLightsToSend[MAX_SPOT_LIGHTS];
-		unsigned int activeSpotLights = 0;
-		for (int i = 0; i < MAX_SPOT_LIGHTS; i++) {
-			if (mainWindow.getLucesSpot()[i]) {
-				spotLightsToSend[activeSpotLights++] = spotLights[i];
-			}
-		}
-		shaderList[0].SetSpotLights(spotLightsToSend, activeSpotLights);
+		
+		
 
 
 		// DIA A NOCHE /////////////////////////////////////////////
@@ -558,13 +639,57 @@ int main()
 		pointLights[posicionesLamp.size() + 1].SetPos(glm::vec3(posLuzLamp2));
 
 		//Lamparas
-		esNoche = luzSolar < 0.28f;
+		esNoche = luzSolar < 0.32f;
 		if (esNoche)
 
 			shaderList[0].SetPointLights(pointLights, pointLightCount);
 		else
 			shaderList[0].SetPointLights(pointLights, 0);
 		//////////////////////////////////////////////////////////////
+
+		
+		c = mainWindow.escena1();
+		b = mainWindow.escena2();
+		m = mainWindow.escena3();
+
+		if (!c && !b && !m)
+		{
+			shaderList[0].SetSpotLights(spotLights,0 );
+		}
+		else if (!c && !b && m)
+		{
+			shaderList[0].SetSpotLights(&spotLights[2], 1);
+		}
+		else if (!c && b && !m)
+		{
+			shaderList[0].SetSpotLights(&spotLights[1],1);
+		}
+		else if (!c && b && m)
+		{
+			shaderList[0].SetSpotLights(&spotLights[1], 2);
+		}
+		else if (c && !b && !m)
+		{
+			shaderList[0].SetSpotLights(spotLights, spotLightCount - 2);
+		}
+		else if (c && !b && m)
+		{
+
+			temp[0] = spotLights[0];
+			temp[1] = spotLights[2];
+			shaderList[0].SetSpotLights(temp, 2);
+		}
+		else if (c && b && !m)
+		{
+			shaderList[0].SetSpotLights(&spotLights[0], 2);
+		}
+		else if (c && b && m)
+		{
+			shaderList[0].SetSpotLights(spotLights, spotLightCount);
+		}
+
+
+		/////////////////////////////////////////////////////////7
 
 
 		glUniform2fv(uniformTextureOffset, 1, glm::value_ptr(toffset));
@@ -728,6 +853,12 @@ int main()
 		glUniform2f(uniformTextureOffset, 0.0f, 0.0f);
 		glDisable(GL_BLEND);
 
+		objeto = glm::vec3(modelaux[3]);
+		luz = glm::vec3(0.0f, 38.0f, 138.0f);
+		Pos = objeto + luz;
+		Dir = glm::vec3(modelaux * glm::vec4(0.0f, 0.f, 1.0f, 0.0f));
+		spotLights[1].SetFlash(Pos, Dir);
+
 
 		//Vias
 		model = glm::mat4(1.0f);
@@ -780,6 +911,13 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		cancha.RenderModel();
 
+		objeto = glm::vec3(modelaux[3]);
+		luz = glm::vec3(0.0f, 80.0f, -20.0f);
+		Pos = objeto + luz;
+		Dir = glm::vec3(modelaux * glm::vec4(0.0f, -1.0f, 0.0f, 0.0f));
+		spotLights[0].SetFlash(Pos, Dir);
+
+
 		model = modelaux;
 		model = glm::translate(model, glm::vec3(0.0f, 10.f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
@@ -815,38 +953,126 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		crow.RenderModel();
 
+		//////////////  CASA STEAM   //////////////////////////////////////////
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(60.0f, 15.0f, 190.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		casa.RenderModel();
+
+		//ENGRANE (animado por tecla J)
+
+		if (mainWindow.getsKeys()[GLFW_KEY_J])
+		{
+			anguloEngrane += 1.0f * deltaTime;
+			if (anguloEngrane >= 360.0f) { anguloEngrane -= 360.0f; }
+		}
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(120.0f, 20.0f, 190.0f));
+		model = glm::rotate(model, anguloEngrane * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(15.0f, 15.0f, 15.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		engrane.RenderModel();
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(120.0f, 36.0f, 218.0f));
+		model = glm::rotate(model, (-anguloEngrane + 15.0f) * toRadians, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(15.0f, 15.0f, 15.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		engrane.RenderModel();
+
 		//CENTER POKEMON -------------------------------------------
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.3f, 250.0f));
+		model = glm::translate(model, glm::vec3(-40.0f, 0.3f, 240.0f));
 		model = glm::scale(model, glm::vec3(0.7f, 0.7f, 0.7f));
 		model = glm::rotate(model, 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		pcenter.RenderModel();
 
+
+
 		//LUCARIO (PRINCIPAL)
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(-200.0f, 0.3f, 170.0f));
 		modelaux = model;
-		model = glm::scale(model, glm::vec3(15.0f, 15.0f, 15.0f));
+		model = glm::scale(model, glm::vec3(14.5f, 14.5f, 14.5f));
 		model = glm::rotate(model, 142.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		lucario.RenderModel();
 
-		model = modelaux;
-		model = glm::translate(model, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-		model = glm::rotate(model, 142.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
-		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		bolaLucario.RenderModel();
+		if (mainWindow.getsKeys()[GLFW_KEY_H])
+		{
+			if (!lanzarKame)
+			{
+				lanzarKame = true;
+				creciendo = true;
+				moviendo = false;
+				escalaKame = 1.0f;
+				posKame = glm::vec3(15.0f, 15.0f, 0.0f);
+				distanciaRecorrida = 0.0f;
+			}
+		}
 
-		
+		if (lanzarKame)
+		{
+			if (creciendo)
+			{
+				escalaKame += 0.3f;
+				if (escalaKame >= escalaMax)
+				{
+					escalaKame = escalaMax;
+					creciendo = false;
+					moviendo = true;
+				}
+			}
+
+			if (moviendo)
+			{
+				glm::vec3 movimiento = direccionKame * velocidadKame;
+				posKame += movimiento;
+				distanciaRecorrida +=glm::length(movimiento);
+
+				if (distanciaRecorrida >= distanciaMax)
+				{
+					lanzarKame = false;
+				}
+			
+			}
+
+			model = modelaux;
+			model = glm::translate(model, posKame);
+			model = glm::scale(model, glm::vec3(escalaKame));
+			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+			bolaLucario.RenderModel();
+
+		}
+
+
 		//snorlax
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(-90.0f, 0.2f, 190.0f));
+		modelaux = model;
 		model = glm::scale(model, glm::vec3(12.0f, 12.0f, 12.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		snorlax.RenderModel();
+
+		objeto = glm::vec3(modelaux[3]);
+		luz = glm::vec3(0.0f, 80.0f, -20.0f);
+		Pos = objeto + luz;
+		Dir = glm::vec3(modelaux * glm::vec4(0.0f, -1.0f, 0.0f, 0.0f));
+		spotLights[2].SetFlash(Pos, Dir);
+
+		//POKEBOLA (animada)
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(30.0f + sin(angulovaria * 0.2f) * 2.0f, 9.0f, 62.0f)); // animacion en x 
+		model = glm::rotate(model, ((sin(angulovaria * 0.2f) * 2.0f) * 50.0f) * toRadians, glm::vec3(0.0f, 0.0f, -1.0f)); //giro de la pokebola
+		model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		pokebola.RenderModel();
 
 		//  SNITCH (animado ) -------------------------------------------
 		float posX = -60.0f + (sin(angulovaria * movOffsetSnitch) * 25.0f);

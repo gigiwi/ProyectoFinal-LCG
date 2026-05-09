@@ -23,6 +23,7 @@ public:
 	~Camera();
 
 	void setPosition(glm::vec3 pos);
+	void setYaw(GLfloat yaw);
 
 private:
 	glm::vec3 position;
