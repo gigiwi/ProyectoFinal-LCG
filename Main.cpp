@@ -84,7 +84,7 @@ Model lucario;
 //Luces
 Model lamp;
 Model lamp2;
-//Model lamp3;
+Model lamp3;
 
 //NPC
 Model magoMalo;
@@ -230,8 +230,8 @@ int main()
 	lamp.LoadModel("Models/lamp.obj");
 	lamp2 = Model();
 	lamp2.LoadModel("Models/lamp_g.obj");
-	//lamp3 = Model();
-	//lamp3.LoadModel("Models/lamp3.obj");
+	lamp3 = Model();
+	lamp3.LoadModel("Models/lamp3.obj");
 
 	//AVATAR
 	derechaB = Model();
@@ -279,7 +279,7 @@ int main()
 
 	unsigned int pointLightCount = 0;
 
-	// Posiciones de todas las lámparas "lamp3.obj" faros
+	// Posiciones de todas las lámparas
 	std::vector<glm::vec3> posicionesLamp = {
 		glm::vec3(10.0f, 0.0f, -90.0f),
 		glm::vec3(-200.0f, 0.0f, -90.0f),
@@ -287,7 +287,6 @@ int main()
 		glm::vec3(10.0f, 0.0f, 90.0f),
 		glm::vec3(-200.0f, 0.0f, 90.0f),
 		glm::vec3(240.0f, 0.0f, 280.0f),
-		glm::vec3(240.0f, 0.0f, -90.0f)
 	};
 
 	//  Inicialización de las luces de lamp.obj
@@ -533,11 +532,11 @@ int main()
 		}
 
 		// Jerarquía luz lampara javi 
-
 		nodoLampara1 = glm::mat4(1.0f);
 		nodoLampara1 = glm::translate(nodoLampara1, glm::vec3(240.0f, 0.0f, -90.0f));
 		nodoLampara1 = glm::scale(nodoLampara1, glm::vec3(10.0f, 10.0f, 10.0f));
-		posLuzLamp1 = nodoLampara1 * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		nodoLampara1 = glm::rotate(nodoLampara1, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		posLuzLamp1 = nodoLampara1 * glm::vec4(-1.0f, 2.8f, 0.0f, 1.0f);
 		pointLights[posicionesLamp.size()].SetPos(glm::vec3(posLuzLamp1));
 
 		// jerarquía luz lampara gis)
@@ -545,7 +544,7 @@ int main()
 		nodoLamp2 = glm::translate(nodoLamp2, glm::vec3(-185.0f, 14.0f, -214.0f));
 		nodoLamp2 = glm::scale(nodoLamp2, glm::vec3(3.0f, 3.0f, 3.0f));
 		posLuzLamp2 = nodoLamp2 * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-		pointLights[posicionesLamp.size()+1].SetPos(glm::vec3(posLuzLamp2));
+		pointLights[posicionesLamp.size() + 1].SetPos(glm::vec3(posLuzLamp2));
 
 		//Lamparas
 		esNoche = luzSolar < 0.28f;
@@ -930,18 +929,22 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		lamp2.RenderModel();
 
-		// lamp 1
-		// dibujo de todas las copias de la lampara 
+		// lampara javi 
+		model = nodoLampara1;
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		lamp.RenderModel();
+
+		// resto de las lamparas 
 		for (int i = 0; i < posicionesLamp.size(); i++)
 		{
-			nodoLampara1 = glm::mat4(1.0f);
-			nodoLampara1 = glm::translate(nodoLampara1, posicionesLamp[i]);
-			nodoLampara1 = glm::scale(nodoLampara1, glm::vec3(10.0f, 10.0f, 10.0f));
-			nodoLampara1 = glm::rotate(nodoLampara1, glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+			nodoLamp = glm::mat4(1.0f);
+			nodoLamp = glm::translate(nodoLamp, glm::vec3(posicionesLamp[i].x, 22.1f, posicionesLamp[i].z));
+			nodoLamp = glm::scale(nodoLamp, glm::vec3(12.0f, 12.0f, 12.0f));
 
-			model = nodoLampara1;
+			model = nodoLamp;
 			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-			lamp.RenderModel();
+			lamp3.RenderModel(); 
+
 		}
 
 		glUseProgram(0);
