@@ -19,7 +19,8 @@ public:
 	bool getMoverAtras() { return moverAtras; }
 	bool getMoverIzquierda() { return moverIzquierda; }
 	bool getMoverDerecha() { return moverDerecha; }
-
+	bool getMoverTren() { return trenMover; }
+	void setMoverTren(bool value);
 
 	bool* getLucesSpot() { return lucesSpot; }
 
@@ -50,6 +51,7 @@ private:
 	bool moverAtras;
 	bool moverIzquierda;
 	bool moverDerecha;
+	bool trenMover;
 
 
 	static void ManejaTeclado(GLFWwindow* window, int key, int code, int action, int mode);

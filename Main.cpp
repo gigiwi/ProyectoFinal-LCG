@@ -54,6 +54,7 @@ Camera camaraAvatar;
 Texture pisoTexture;
 Texture parking;
 Texture pasillo;
+Texture humo;
 
 //Ambiente
 Model express;
@@ -78,7 +79,9 @@ Model pokebola;
 Model libro;
 Model libroAlaDer;
 Model libroAlaIzq;
-Model lucario;
+Model maquinaTiempo;
+Model bolaLucario;
+
 
 
 //Luces
@@ -91,8 +94,8 @@ Model magoMalo;
 Model magoBueno;
 Model mismagus;
 Model crow;
-
-Model pokemon;
+Model lucario;
+Model snorlax;
 Model pokemon2;
 Model pokemon3;
 
@@ -162,6 +165,8 @@ int main()
 	parking.LoadTextureA();
 	pasillo = Texture("Textures/pasillo.jpg");
 	pasillo.LoadTextureA();
+	humo = Texture("Textures/humo.png");
+	humo.LoadTextureA();
 
 	//MODELOS
 	express = Model();
@@ -194,6 +199,8 @@ int main()
 	pcenter.LoadModel("Models/pcenter.obj");
 	hatHarry = Model();
 	hatHarry.LoadModel("Models/hat2.obj");
+	maquinaTiempo = Model();
+	maquinaTiempo.LoadModel("Models/maquinaTiempo.obj");
 
 
 	//MODELOS ANIMADOS
@@ -211,6 +218,8 @@ int main()
 	libroAlaDer.LoadModel("Models/libroalaDer.obj");
 	libroAlaIzq = Model();
 	libroAlaIzq.LoadModel("Models/libroalaIzq.obj");
+	bolaLucario = Model();
+	bolaLucario.LoadModel("Models/bolaLucario.obj");
 
 	//NPC 
 	magoMalo = Model();
@@ -223,7 +232,8 @@ int main()
 	crow.LoadModel("Models/crow.obj");
 	lucario = Model();
 	lucario.LoadModel("Models/lucario.obj");
-
+	snorlax = Model();
+	snorlax.LoadModel("Models/snorlax.obj");
 
 	//Modelos Luces
 	lamp = Model();
@@ -248,7 +258,7 @@ int main()
 
 
 	//CAMARAS
-	camera = Camera(glm::vec3(0.0f, 300.0f, 0.0f),glm::vec3(0.0f, 1.0f, 0.0f),-90.0f,-89.0f,0.5f,0.5f);
+	camera = Camera(glm::vec3(0.0f, 300.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -90.0f, -89.0f, 0.5f, 0.5f);
 	camaraAvatar = Camera(glm::vec3(2.0f, 2.0f, 0.5f), glm::vec3(0.0f, 1.0f, 0.0f), 180.0f, 0.0f, 0.3f, 0.5f);
 
 
@@ -411,6 +421,7 @@ int main()
 	float cambioDiaNoche;
 	float velArticulaciones = 0.0f;
 	float Articulaciones;
+	static bool gPresionada = false;
 
 
 	while (!mainWindow.getShouldClose())
@@ -639,7 +650,11 @@ int main()
 		model = glm::scale(model, glm::vec3(300.0f, 300.0f, 200.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		rocas3.RenderModel();
-
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-280.0f, 0.3f, 0.0f));
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		maquinaTiempo.RenderModel();
 
 
 		//ESTACIONAMIENTO
@@ -670,20 +685,49 @@ int main()
 		cochesteam.RenderModel();
 
 
-		//Express
-		if (avanceTren < 220.0f) {
-			avanceTren += 0.12f * deltaTime;
-		}
-		else {
-			avanceTren = 220.0f;
+		if (mainWindow.getMoverTren())
+		{
+			if (avanceTren < 220.0f)
+			{
+				avanceTren += 0.12f * deltaTime;
+			}
+			else
+			{
+				avanceTren = 220.0f;
+				mainWindow.setMoverTren(false);
+			}
 		}
 
+		//Express
+		
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(324.0f, 0.1f, -220.0f + avanceTren));
 		modelaux = model;
 		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		express.RenderModel();
+
+		toffsetflechau += 0.001f;
+		toffsetflechav = 0.0f;
+		if (toffsetflechau > 1.0f)
+			toffsetflechau = 0.0f;
+
+		model = modelaux;
+		model = glm::scale(model, glm::vec3(10.0f, 10.0f, 10.0f));
+		model = glm::translate(model, glm::vec3(0.0f, 7.0f, 14.0f));
+		model = glm::rotate(model,  180*toRadians, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(3.0f, 3.0f, 3.0f));
+
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		glUniform2f(uniformTextureOffset, toffsetflechav, toffsetflechau);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		humo.UseTexture();
+		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		meshList[3]->RenderMesh();
+		glUniform2f(uniformTextureOffset, 0.0f, 0.0f);
+		glDisable(GL_BLEND);
+
 
 		//Vias
 		model = glm::mat4(1.0f);
@@ -771,9 +815,7 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		crow.RenderModel();
 
-
-
-		//CENTER POKEMON
+		//CENTER POKEMON -------------------------------------------
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, 0.3f, 250.0f));
 		model = glm::scale(model, glm::vec3(0.7f, 0.7f, 0.7f));
@@ -783,23 +825,27 @@ int main()
 
 		//LUCARIO (PRINCIPAL)
 		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.3f, 20.0f));
+		model = glm::translate(model, glm::vec3(-200.0f, 0.3f, 170.0f));
+		modelaux = model;
 		model = glm::scale(model, glm::vec3(15.0f, 15.0f, 15.0f));
-		model = glm::rotate(model, 180.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, 142.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
 		lucario.RenderModel();
 
-
-
-		//POKEBOLA (animada)
-
-		model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(30.0f + sin(angulovaria * 0.2f) * 2.0f, 9.0f, 62.0f)); // animacion en x 
-		model = glm::rotate(model, ((sin(angulovaria * 0.2f) * 2.0f) * 50.0f) * toRadians, glm::vec3(0.0f, 0.0f, -1.0f)); //giro de la pokebola
-		model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
-		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		model = modelaux;
+		model = glm::translate(model, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+		model = glm::rotate(model, 142.0f * toRadians, glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-		pokebola.RenderModel();
+		bolaLucario.RenderModel();
+
+		//snorlax
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-90.0f, 0.2f, 190.0f));
+		model = glm::scale(model, glm::vec3(12.0f, 12.0f, 12.0f));
+		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
+		Material_opaco.UseMaterial(uniformSpecularIntensity, uniformShininess);
+		snorlax.RenderModel();
 
 		//  SNITCH (animado ) -------------------------------------------
 		float posX = -60.0f + (sin(angulovaria * movOffsetSnitch) * 25.0f);
@@ -812,7 +858,6 @@ int main()
 		glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(nodoSnitchBase));
 		Material_brillante.UseMaterial(uniformSpecularIntensity, uniformShininess);
 		snitchBase.RenderModel();
-
 
 		//aleteo alas
 		float anguloAleteo = sin(angulovaria * aleteoOffsetSnitch) * 35.0f;
@@ -851,7 +896,7 @@ int main()
 			offsetLibroX2 = -80.0f;
 			offsetDirLibro2 = -1.0f;
 			offsetGiroObjetivo2 = 180.0f;
-		} 
+		}
 		else if (offsetLibroX2 <= -280.0f) { //desplazamiento máximo hacia la izquierda
 			offsetLibroX2 = -280.0f;
 			offsetDirLibro2 = 1.0f;
@@ -943,7 +988,7 @@ int main()
 
 			model = nodoLamp;
 			glUniformMatrix4fv(uniformModel, 1, GL_FALSE, glm::value_ptr(model));
-			lamp3.RenderModel(); 
+			lamp3.RenderModel();
 
 		}
 

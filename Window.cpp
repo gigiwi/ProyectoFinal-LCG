@@ -19,6 +19,7 @@ Window::Window(GLint windowWidth, GLint windowHeight)
     moverAtras = false;
     moverIzquierda = false;
     moverDerecha = false;
+	trenMover = false;
 
 	for (size_t i = 0; i < 1024; i++)
 	{
@@ -147,6 +148,12 @@ void Window::ManejaTeclado(GLFWwindow* window, int key, int code, int action, in
 		theWindow-> muevex -= 1.0;
 	}
 
+	if (key == GLFW_KEY_G && action == GLFW_PRESS)
+	{
+		theWindow->trenMover = !theWindow->trenMover;
+	}
+
+
 	if (key >= 0 && key < 1024)
 	{
 		if (action == GLFW_PRESS)
@@ -188,4 +195,9 @@ Window::~Window()
 	glfwDestroyWindow(mainWindow);
 	glfwTerminate();
 
+}
+
+void Window::setMoverTren(bool value)
+{
+	trenMover = value;
 }
