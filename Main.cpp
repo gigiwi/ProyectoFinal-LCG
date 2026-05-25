@@ -2,10 +2,9 @@
 /*
 PROYECTO FINAL COMPUTACION GRAFICA
 
-Integrantes: 
+423035119
 
-	Reyes Herrera Vanessa Giselle
-	Velasco Pacheco Javier
+colaborado con: 319060331 
 
 */
 
